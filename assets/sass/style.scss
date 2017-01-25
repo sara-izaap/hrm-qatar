@@ -68,6 +68,9 @@
 // Compass css3 components
 @import "compass/css3";
 
+@import "variables";
+
+@import "_navbar";
 // CSS3 Animation
 @import "CSS:css/animate";
 // @import "CSS:css/jquery-ui";
@@ -81,7 +84,6 @@
 
 
 // Common css
-@import "variables";
 @import "forms";
 @import "common";
 
@@ -139,6 +141,7 @@ $asset-base-path: '../assets' !default;
   padding-top: 15px;
   padding-bottom: 15px;
   border-bottom:1px solid rgba($secondary, 0.3);
+  margin-bottom: 15px;
 
   a {
       margin:0 5px;
@@ -235,7 +238,7 @@ svg.custom-svg path {fill: $green !important; stroke:$white !important;}
 .sidebar {
   min-height: 100vh;
   background-color:$primary;
-  @include background-image(linear-gradient($primary, #23599f));
+  @include background-image(linear-gradient($primary, #00306b));
   // margin-left: -15px;
   // margin-right: -15px;
 
@@ -485,6 +488,7 @@ hr {
 //     background-color: #3e8e41;
 // }
 
+
 .dropdown {
     position: relative;
     display: inline-block;
@@ -494,6 +498,9 @@ hr {
       background-color: $primary;
       color:$white-semi;
     }
+}
+.dropdown.open {
+  z-index: 1;
 }
 
 .dropdown-content {
@@ -608,6 +615,7 @@ hr {
    max-width:70px;
  }  // table-timesheet
 } // table-timesheet
+
 
 
 

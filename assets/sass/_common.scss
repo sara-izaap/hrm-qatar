@@ -506,10 +506,10 @@ form {
 
 
 .breadcrumbs { // breadcrumbs
-	background-color: rgba($primary, 0.1);
+	background-color: rgba($yellow, 0.1);
 	padding:15px 35px;
-	border-top: 1px solid rgba($primary, 0.3);
-	border-bottom: 1px solid rgba($primary, 0.3);
+	border-top: 1px solid rgba($yellow, 0.3);
+	border-bottom: 1px solid rgba($yellow, 0.3);
 	margin-bottom: 25px;
 
 	a {
@@ -632,10 +632,10 @@ form {
 /*Suresh 00258*/
 
 .action-buttons{
-  background-color: rgba(46, 162, 222, 0.1);
+  background-color: rgba($yellow, 0.1);
     padding: 15px 35px;
-    border-top: 1px solid rgba(46, 162, 222, 0.3);
-    border-bottom: 1px solid rgba(46, 162, 222, 0.3);
+    border-top: 1px solid rgba($yellow, 0.3);
+    border-bottom: 1px solid rgba($yellow, 0.3);
     margin-bottom: 25px;
 }
 
@@ -988,8 +988,8 @@ form {
     width: 220px;
     float: left;
     max-width: 100%;
-    background: rgba(46, 162, 222, 0.1);
-    border-color: #2ea2de;
+    background: rgba($primary, 0.1);
+    border-color: $primary;
 }
 .form-style-base{
   position:absolute;
@@ -1017,8 +1017,8 @@ form {
     border-left: .3em solid transparent;
 }
 .timesheet-downbload .btn{ 
-	background: rgba(46, 162, 222, 0.1);
-    border:1px solid #2ea2de; 
+	background: rgba($primary, 0.1);
+    border:1px solid $primary; 
 	color:#6a7987; 
 	border-radius:3px;
 }
