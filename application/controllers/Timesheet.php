@@ -1,0 +1,377 @@
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+
+require_once(APPPATH."libraries/Admin_controller.php");
+
+class Timesheet extends Admin_Controller 
+{
+	
+    function __construct()
+    {
+        parent::__construct();  
+
+        if(!is_logged_in())
+            redirect('login');
+        
+        $this->load->model('timesheet_model');
+       
+    }  
+    
+    public function index()
+    { 
+        $this->layout->add_javascripts(array('listing'));  
+
+        $this->load->library('listing');         
+        
+        $this->simple_search_fields = array(                                                
+                                    'e.emp_name'       => 'Name',
+                                    'e.emp_code'       => 'Employee Code'
+                                                                               
+        );
+         
+        $this->_narrow_search_conditions = array("organization","project","date_range","emplist");
+        
+        $str = '<a href="javascript:void(0);" data-original-title="Edit" data-toggle="tooltip" data-placement="top" class="table-action" onclick="edit_timesheet(\'form\',\'{id}\');"><i class="fa fa-edit edit"></i></a>
+                <a href="javascript:void(0);" data-original-title="Remove" data-toggle="tooltip" data-placement="top" class="table-action" onclick="delete_record(\'timesheet/delete/{id}\',this);"><i class="fa fa-trash-o trash"></i></a>
+                ';
+ 
+        $this->listing->initialize(array('listing_action' => $str));
+
+        $listing = $this->listing->get_listings('timesheet_model', 'listing');
+
+        if($this->input->is_ajax_request())
+            $this->_ajax_output(array('listing' => $listing), TRUE);
+        
+        $this->data['bulk_actions'] = array('' => 'select', 'delete' => 'Delete');
+        $this->data['simple_search_fields'] = $this->simple_search_fields;
+        $this->data['search_conditions'] = $this->session->userdata($this->namespace.'_search_conditions');
+        $this->data['per_page'] = $this->listing->_get_per_page();
+        $this->data['per_page_options'] = array_combine($this->listing->_get_per_page_options(), $this->listing->_get_per_page_options());
+        
+        $this->data['search_bar'] = $this->load->view('frontend/timesheet/search_bar', $this->data, TRUE);        
+        
+        $this->data['listing'] = $listing;
+        
+        $this->data['grid'] = $this->load->view('listing/view', $this->data, TRUE);
+        
+        $this->layout->view("frontend/timesheet/index");
+        
+    }
+    
+    public function create(){
+
+        try
+        {
+            $data['status']   = 'success';
+            $data['message']  = '';
+
+            $form = $this->input->post();
+
+            $emplist = isset($form['emplist'])?$form['emplist'] : array();
+
+            if(!$emplist){
+
+                $where=(isset($form['organization']) && !empty($form['organization']))? array('org_id'=>$form['organization']) : array();
+
+                $emplist = $this->timesheet_model->get_employess($where);                
+            }            
+
+            if(!$emplist)
+                throw new Exception("No Employees Found.");
+
+            $splitdate  = explode("|",$form['date_range']);
+
+            $datelist = $this->daterange($splitdate[0],$splitdate[1]);
+
+            foreach($emplist as $emp){
+
+                foreach($datelist as $dat){
+
+                    if(!check_is_working_day($dat))
+                        continue;
+
+                    $ins_data = array();
+                    $ins_data['emp_code']   = $emp;
+                    $ins_data['date']       = $dat;
+                    $ins_data['hour']       = $form['hours'];
+                    $ins_data['project']    = $form['project'];
+                    $ins_data['purpose']    = '';                    
+                   
+                    $this->insert_and_update_timesheet($ins_data);
+                    
+                }
+            }
+
+            $data['message']  = 'Records created successfully!';
+
+        }
+        catch (Exception $e)
+        {
+            $data['status']   = 'error';
+            $data['message']  = $e->getMessage();
+                
+        }
+
+        if($this->input->is_ajax_request())
+            $this->_ajax_output($data, TRUE);
+
+    }
+
+    public function edit($id = 0){
+
+        try
+        {
+            if(!$id)
+                throw new Exception("Invalid ID.");
+
+            $output = array('status'=>'','message'=>'');
+
+            $this->form_validation->set_rules('hour','Hour','trim|required');
+            $this->form_validation->set_rules('project','Project','trim');
+            $this->form_validation->set_rules('purpose','Purpose','trim');
+
+            $this->form_validation->set_error_delimiters('', '');
+
+            if ( count($_POST) && $this->form_validation->run())
+            {
+                $ins_data= array();
+                $ins_data['hour']      = $this->input->post('hour');
+                $ins_data['project']   = $this->input->post('project');
+                $ins_data['purpose']   = $this->input->post('purpose');
+                $ins_data['updated_id']= get_current_user_id();
+
+                $this->timesheet_model->update(array('id'=>$id), $ins_data);
+
+                $output['status']  = 'success';
+                $output['message'] = 'Timesheet updated sucessfully';
+            }
+            
+            $data['edit_data'] = $this->timesheet_model->get_edit_record($id);
+            $data['id']        = $id;
+
+            $output['content'] = $this->load->view('frontend/timesheet/edit',$data,TRUE);  
+
+        }    
+        catch (Exception $e)
+        {
+            $output['status']   = 'error';
+            $output['message']  = $e->getMessage();                
+        }
+        
+        if($this->input->is_ajax_request())
+            $this->_ajax_output($output, TRUE);   
+
+    }
+
+    public function import(){
+
+        try
+        {
+            $message ='';
+
+            $this->load->library('csvreader');
+
+            if(count($_FILES) <= 0 )
+                throw new Exception("Please choose file!");
+
+            $config['upload_path'] = './uploads';
+            $config['allowed_types'] = 'text/plain|text/csv|csv';
+            $config['max_size']     = '20000000';
+          
+            $this->load->library('upload', $config);
+
+            if (!$this->upload->do_upload())
+                throw new Exception($this->upload->display_errors());
+
+            $data  = $this->upload->data();
+            
+            //read the first row of uploaded file
+            $first_row = $this->csvreader->parse_file($data['full_path'], TRUE, $indexedArray = FALSE, $records_to_return=1);
+
+            //get first row from csv
+            $fields = $this->csvreader->fields;
+
+            $missing_columns = array();
+            foreach ($this->require_fields() as $k=>$v)
+            {
+                if(!in_array($v, $fields) && !in_array(strtolower($v), $fields) ) 
+                    $missing_columns[] = $v;                    
+            }
+            
+            if(count($missing_columns))            
+                throw new Exception('Incorrect columns appeared in CSV file.');
+            
+            $rows = $this->csvreader->parse_file($data['full_path'], TRUE, $indexedArray = FALSE);
+
+            if(!count($rows))
+                throw new Exception('No records found in file.');
+
+            foreach ($rows as $row) 
+            {
+                if( strcmp('', trim($row['emp_code'])) === 0 || strcmp('', trim($row['date'])) === 0  || strcmp('', trim($row['hour'])) === 0 )
+                    continue;
+
+                if(!check_is_working_day(trim($row['date'])))
+                    continue;
+
+                $checkemp = $this->timesheet_model->get_where(array('emp_code'=>trim($row['emp_code'])),'id','employee')->num_rows();
+
+                if(!$checkemp)
+                    continue;
+
+                $ins_data = array();
+                $ins_data['emp_code']   = trim($row['emp_code']);
+                $ins_data['date']       = trim($row['date']);
+                $ins_data['hour']       = trim($row['hour']);
+                $ins_data['project']    = '';
+                $ins_data['purpose']    = trim($row['purpose']);
+
+                $this->insert_and_update_timesheet($ins_data);
+            }
+
+            array_map('unlink', glob("./uploads/*"));    
+
+            $message ='File imported successfully';
+            $status = 'success';
+
+        }
+        catch (Exception $e)
+        {
+            $status   = 'error';
+            $message  = $e->getMessage();                
+        }
+
+        $alertmsg = ($status == 'success')?'success_msg':'error_msg';
+        $this->session->set_flashdata($alertmsg,$message,TRUE);
+
+        redirect('timesheet');
+
+    }
+
+    function insert_and_update_timesheet($data){
+
+        //Check the data already exists
+        $where = array('emp_code'=> $data['emp_code'],'date'=>$data['date']);
+        $checkupd = $this->timesheet_model->get_where($where)->num_rows(); 
+
+        if($checkupd){
+
+            $data['updated_id'] = get_current_user_id();
+
+            $this->timesheet_model->update($where, $data);
+        }
+        else
+        {
+            $data['created_id'] = get_current_user_id();
+            $data['created_date'] = date('Y-m-d H:i:s'); 
+
+            $this->timesheet_model->insert($data);
+        } 
+
+        return TRUE;   
+
+    }
+
+
+    function daterange($start, $end, $step = '+1 day', $format = 'Y-m-d'){
+
+        $start = date($format,strtotime($start));
+
+        $data = array();
+
+        while (strtotime($start) <= strtotime($end)) {
+
+            $data[] = $start;
+
+            $start = date ($format , strtotime( $step, strtotime($start)));
+        }
+
+        return $data;
+    }
+
+    function delete($del_id)
+    {
+        $access_data = $this->timesheet_model->get_where(array("id"=>$del_id))->num_rows();
+       
+        $output=array();
+
+        if($access_data > 0){
+            $this->timesheet_model->delete(array("id"=>$del_id));
+            $output['message'] ="Record deleted successfuly.";
+            $output['status']  = "success";
+        }
+        else
+        {
+           $output['message'] ="This record not matched by timesheet.";
+           $output['status']  = "error";
+        }
+        
+        $this->_ajax_output($output, TRUE);
+            
+    }
+
+    function require_fields(){
+
+        $fields = array();
+
+        $fields['emp_code']='emp_code';  
+        $fields['date']='date';
+        $fields['hour']='hour';
+        $fields['purpose']='purpose';
+
+        return $fields;
+    }
+
+    public function template_download(){
+
+        $this->load->helper('csv_helper');
+
+        $data[] = $this->require_fields();
+        
+        array_to_csv($data,'timesheet_import.csv');
+            
+        exit;
+    }
+
+    function export($type){
+
+        try
+        {
+            $form = $this->input->post();
+
+            $result = $this->timesheet_model->get_report($form,$type);
+
+            $columns = array('Employee Name','Employee Code','Date(yyyy-mm-dd)','Hours','Organization','Project','Purpose');
+
+            if($type == 2)
+                $columns = array('Employee Name','Employee Code','Organization','Hours');
+
+            $data[] = $columns;
+        
+            $this->load->helper('csv_helper');
+
+            foreach($result as $ke => $res)
+            {
+                if($type == 1)
+                    $data[] = array($res['emp_name'],$res['emp_code'],$res['date'],$res['hour'],$res['organization'],$res['project'],$res['purpose']);    
+                else
+                    $data[] = array($res['emp_name'],$res['emp_code'],$res['organization'],$res['hour']); 
+            }
+
+            list($from, $to)  = explode("|",$form['date_range']);
+
+            $filename = 'Timesheet-'.$from.'-to-'.$to.'.csv';
+
+            array_to_csv($data, $filename);
+
+        }
+        catch (Exception $e)
+        {
+            $status   = 'error';
+            $message  = $e->getMessage();                
+        }
+
+        exit;    
+    }  
+    
+}
+?>
