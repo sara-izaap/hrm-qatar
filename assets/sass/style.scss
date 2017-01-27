@@ -618,5 +618,49 @@ hr {
 
 
 
+// filter-row
+.filter-column {
+  .filter-row {
+    label {
+      font-size:14px;
+    }
+
+    margin-bottom: 15px;
+  } // filter-row
+} // filter-row
+
+
+.user-wrapper {
+  height:90vh;
+  overflow-y:auto;
+  border-left:1px solid rgba($secondary, 0.5);
+  padding-left: 15px;
+  @include scrolling-shadows;
+}
+
+.single-user {
+    label { 
+      padding-right: 0;
+      padding-left: 35px;
+
+      &:hover {
+        color:$primary;
+      }
+
+      &:after {
+        right:inherit;
+        left:0;
+      } // single-user > label:after
+    } // single-user > label
+
+    .ui-state-active{
+      color:#289a05;
+
+      &:hover {
+        color:#289a05;
+      }
+    }
+  } // single-user
+
 
 
