@@ -76,7 +76,18 @@
 			<?php foreach ($list as $item) : ?>
             
 			<?php $val = $this->uri->segment(1);?>
-			<tr id="<?php echo (isset($item['id']))?$item['id']:""; ?>">
+
+			<?php $fridayrow=''; 
+
+			if($val == 'timesheet'){
+
+				$datchk = date('l',strtotime($item['date']));
+				
+				if(strtolower($datchk) == 'friday')
+					$fridayrow = 'fridayrow';
+			}	
+			?>
+			<tr id="<?php echo (isset($item['id']))?$item['id']:""; ?>" class="<?php echo $fridayrow;?>">
             
 				<td>
                 <?php if((isset($item['id']) && !empty($item['id']))) { ?>
