@@ -13,31 +13,33 @@
             <img src="<?php echo include_img_path();?>logo_new.png" alt="HR Management" />
           </a>
         </div>
+        <?php $curr_ctlr =  $this->uri->segment(1, 'index');?>
+
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             
-            <li class="active">
+            <li>
               <a href="javascript:void(0);">
                 <i class="fa fa-dashboard fa-fw"></i> 
                   Dashboard
               </a>
             </li>
             
-            <li>
+            <li <?php echo ($curr_ctlr == 'organization')?'class="active"':'';?> >
               <a href="<?=site_url('organization');?>">
                 <i class="fa fa-users fa-fw"></i> 
                   Organisation 
               </a> 
             </li>
 
-            <li>
+            <li <?php echo ($curr_ctlr == 'employee')?'class="active"':'';?> >
               <a href="<?=site_url('employee');?>">
                 <i class="fa fa-user fa-fw"></i> 
                   Employees
               </a>  
             </li>
 
-            <li>
+            <li <?php echo ($curr_ctlr == 'timesheet')?'class="active"':'';?> >
               <a href="<?=site_url('timesheet');?>">
                 <i class="fa fa-clock-o fa-fw"></i> 
                   Timesheet
@@ -66,28 +68,7 @@
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="../navbar/">Default</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </nav>
-  </div>
-  <div class="row">
-
-   
-
-    <aside class="col-sm-12 cf">
-      
-      <div class="row">
-          <div class="bg-white">
-            <div class="top-search col-sm-11">
-              <div class="form-group">
-                <input type="search" name="" class="form-control" id="" placeholder="Search for Project & Professional">
-              </div>
-            </div>
-
-            <div class="top-search text-right col-xs-1">
-
+            <li>
                 <div class="user-pic">
                     <img src="<?php echo include_img_path();?>default-user.jpg" alt="HR Management" />
                   
@@ -101,8 +82,14 @@
                   </div>
 
                 </div>
-                
-            </div>
-          </div>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+  </div>
+  <div class="row">
 
-        </div>
+    <aside class="col-sm-12 cf">
+      
+     

@@ -29,7 +29,7 @@
 // @import "bootstrap/grid";
 // @import "bootstrap/tables";
 // @import "bootstrap/forms";
-// @import "bootstrap/buttons";
+   @import "bootstrap/buttons"; 
 
 // Components
 // @import "bootstrap/component-animations";
@@ -552,7 +552,7 @@ hr {
 
   i {
     color: $white;
-    background: rgba($primary, 0.8);
+    background: rgba($yellow, 0.8);
     padding: 5px;
     @include border-radius(50%);
     width: 25px;
@@ -566,14 +566,14 @@ hr {
 
 
 .user-pic {
-  padding-top: 25px;
+  padding-top: 10px;
   position: relative;
   z-index: 999;
   img {
     max-width:48px;
     max-height:48px;
     @include border-radius(50%);
-    border:1px solid $primary;
+    border:1px solid $yellow;
     box-shadow: 0px 8px 16px 0px rgba($secondary, 0.2);
   } // user-pic img
 } // user-pic
@@ -636,6 +636,9 @@ hr {
   border-left:1px solid rgba($secondary, 0.5);
   padding-left: 15px;
   @include scrolling-shadows;
+  padding-top:10px;
+  padding-bottom:10px;
+  background-color:transparent;
 }
 
 .single-user {
@@ -651,6 +654,9 @@ hr {
         right:inherit;
         left:0;
       } // single-user > label:after
+
+    margin-left:-5px;
+
     } // single-user > label
 
     .ui-state-active{
@@ -661,6 +667,21 @@ hr {
       }
     }
   } // single-user
+
+
+.emp-list {
+  background:rgba($yellow, 0.1);
+  border-bottom:1px solid rgba($secondary, 0.1);
+  padding-left:10px;
+  h3 {
+    font-size:14px;
+    margin:0;
+    padding-left:15px;
+    padding-top:15px;
+    border-left:1px solid rgba($secondary, 0.5);
+
+  }
+}
 
 
 

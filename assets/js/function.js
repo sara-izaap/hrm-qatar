@@ -1,7 +1,7 @@
 $(function(){
 
 	//$('a,button').tooltip();
-
+ 
 	$('.singledate').daterangepicker({
 	  singleDatePicker: true,
 	  showDropdowns: true,
@@ -43,10 +43,10 @@ function init_daterangepicker(seldate)
 		    format: 'YYYY-MM-DD',
 		    separator: " | ",
 		},
-        startDate: moment().subtract(6, 'days'),
-        endDate: moment(),        
+        startDate: moment().startOf('month'),
+        endDate: moment().endOf('month'),        
 		alwaysShowCalendars: true,
-		opens: "center"
+		opens: "right"
         
     }, function(start, end, label) {
 	  	//console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
@@ -124,6 +124,7 @@ function create_timesheet(elm)
 {
 	
 	var hour = $("#working_hours").val();
+  var timesheet_type = $("#timesheet_type").val();
 	
 	if(!hour){
 		alert('Please enter working hours!');
@@ -134,7 +135,7 @@ function create_timesheet(elm)
 
 	data = $("#advance_search_form").serialize();
 
-	data += "&hours="+hour;
+	data += "&hours="+hour+"&timesheet_type="+timesheet_type;
 
 	$.post(base_url+'timesheet/create',data,function(rdata){
 					
@@ -199,6 +200,8 @@ function refresh_grid(data_tbl){
 function service_message(err_type,message,div_id){
     
     div_id = (div_id)?div_id:false; 	
+
+    $("#div_service_message").remove();
     
     var str  ='<div id="div_service_message" class="alert alert-'+err_type+' alert-dismissible">';
         str +='<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>';
@@ -227,4 +230,19 @@ function scroll_to(jump_id){
 function capitaliseFirstLetter(string)
 {
     return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+function get_employeeslist(val,selval){
+
+  $.post(base_url+'timesheet/org_employees/'+val,{},function(rdata){
+          
+      if(rdata.status == 'success')
+      {
+        $(".filter_employee_list").html(rdata.content);
+        init_checkbox(selval);
+        
+      }
+      
+
+  }, 'json');
 }

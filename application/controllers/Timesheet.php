@@ -93,6 +93,7 @@ class Timesheet extends Admin_Controller
                     $ins_data['emp_code']   = $emp;
                     $ins_data['date']       = $dat;
                     $ins_data['hour']       = $form['hours'];
+                    $ins_data['type']       = $form['timesheet_type'];
                     $ins_data['project']    = $form['project'];
                     $ins_data['purpose']    = '';                    
                    
@@ -135,6 +136,7 @@ class Timesheet extends Admin_Controller
             {
                 $ins_data= array();
                 $ins_data['hour']      = $this->input->post('hour');
+                $ins_data['type']      = $this->input->post('timesheet_type');
                 $ins_data['project']   = $this->input->post('project');
                 $ins_data['purpose']   = $this->input->post('purpose');
                 $ins_data['updated_id']= get_current_user_id();
@@ -334,35 +336,65 @@ class Timesheet extends Admin_Controller
 
     function export($type){
 
+
         try
         {
             $form = $this->input->post();
 
+            list($from, $to)  = explode("|",$form['date_range']);
+
+            $filename = 'Timesheet-'.$from.'-to-'.$to.'.xls';
+
+            header('Content-type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment; filename='.$filename);
+
             $result = $this->timesheet_model->get_report($form,$type);
 
-            $columns = array('Employee Name','Employee Code','Date(yyyy-mm-dd)','Hours','Organization','Project','Purpose');
+            $str = '<table><tr>';
+
+            $columns = array('Employee Name','Employee Code','Date(yyyy-mm-dd)','Hours','Type','Organization','Project','Purpose');
 
             if($type == 2)
                 $columns = array('Employee Name','Employee Code','Organization','Hours');
 
-            $data[] = $columns;
-        
-            $this->load->helper('csv_helper');
+            foreach($columns as $key) {
+                $key = ucwords($key);
+                $str .= '<th>'.$key.'</th>';
+            }
+
+            $str .= '</tr>';
+
 
             foreach($result as $ke => $res)
             {
-                if($type == 1)
-                    $data[] = array($res['emp_name'],$res['emp_code'],$res['date'],$res['hour'],$res['organization'],$res['project'],$res['purpose']);    
-                else
-                    $data[] = array($res['emp_name'],$res['emp_code'],$res['organization'],$res['hour']); 
+                 $str .= '<tr>';
+
+                if($type == 1){
+
+                     $str .= '<td>'.$res['emp_name'].'</td>';
+                     $str .= '<td>'.$res['emp_code'].'</td>';
+                     $str .= '<td>'.$res['date'].'</td>';
+                     $str .= '<td>'.$res['hour'].'</td>';
+                     $str .= '<td>'.$res['type'].'</td>';
+                     $str .= '<td>'.$res['organization'].'</td>';
+                     $str .= '<td>'.$res['project'].'</td>';
+                     $str .= '<td>'.$res['purpose'].'</td>';
+
+                }else{
+
+                     $str .= '<td>'.$res['emp_name'].'</td>';
+                     $str .= '<td>'.$res['emp_code'].'</td>';
+                     $str .= '<td>'.$res['hour'].'</td>';
+                     $str .= '<td>'.$res['organization'].'</td>';
+
+                }    
+
+                $str .= '</tr>';
             }
 
-            list($from, $to)  = explode("|",$form['date_range']);
+            $str .= '</table>';
 
-            $filename = 'Timesheet-'.$from.'-to-'.$to.'.csv';
-
-            array_to_csv($data, $filename);
-
+           
         }
         catch (Exception $e)
         {
@@ -370,7 +402,30 @@ class Timesheet extends Admin_Controller
             $message  = $e->getMessage();                
         }
 
+        echo $str;
         exit;    
+    }
+
+    function org_employees($org_id=''){
+
+        $emp_data = get_employees($org_id);
+       
+        $output=array();
+
+        $str = '';
+
+        foreach($emp_data as $key => $val){
+         
+            $str .= '<div class="single-user">
+                        <label for="checkbox-'.$key.'" class="custom-checkbox" align="left">'.$val.' </label>
+                        <input type="checkbox" name="emplist[]" value="'.$key.'" id="checkbox-'.$key.'" class="checkbox empcheckbox">
+                    </div>';
+
+        }
+        $output['content']  = $str;
+        $output['status']  = "success";
+        
+        $this->_ajax_output($output, TRUE);
     }  
     
 }

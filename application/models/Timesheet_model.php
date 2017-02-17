@@ -97,7 +97,7 @@ class Timesheet_model extends App_model {
 
     function get_report($form,$type){
 
-         $fields = "e.emp_name,e.emp_code,t.date,t.hour,t.purpose,o.name as organization,p.name as project";
+         $fields = "e.emp_name,e.emp_code,t.date,t.hour,t.purpose,t.type,o.name as organization,p.name as project";
 
         if($type == 2)
             $fields = "e.emp_name,e.emp_code,sum(t.hour) as hour,o.name as organization";
@@ -125,6 +125,8 @@ class Timesheet_model extends App_model {
 
         if($type==2)
             $this->db->group_by("t.emp_code");
+
+        $this->db->order_by("e.emp_name",'asc');
 
         return $this->db->get()->result_array();
     }

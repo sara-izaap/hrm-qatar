@@ -52,7 +52,7 @@ class Employee extends Admin_Controller
         $this->data['per_page'] = $this->listing->_get_per_page();
         $this->data['per_page_options'] = array_combine($this->listing->_get_per_page_options(), $this->listing->_get_per_page_options());
         
-        $this->data['search_bar'] = $this->load->view('listing/search_bar', $this->data, TRUE);        
+        $this->data['search_bar'] = $this->load->view('frontend/employee/search_bar', $this->data, TRUE);        
         
         $this->data['listing'] = $listing;
         
@@ -287,6 +287,158 @@ class Employee extends Admin_Controller
         return TRUE;
     }
 
+    public function import(){
+
+        try
+        {
+            $message ='';
+
+            $this->load->library('csvreader');
+
+            if(count($_FILES) <= 0 )
+                throw new Exception("Please choose file!");
+
+            $config['upload_path'] = './uploads';
+            $config['allowed_types'] = 'text/plain|text/csv|csv';
+            $config['max_size']     = '20000000';
+          
+            $this->load->library('upload', $config);
+
+            if (!$this->upload->do_upload())
+                throw new Exception($this->upload->display_errors());
+
+            $data  = $this->upload->data();
+            
+            //read the first row of uploaded file
+            $first_row = $this->csvreader->parse_file($data['full_path'], TRUE, $indexedArray = FALSE, $records_to_return=1);
+
+            //get first row from csv
+            $fields = $this->csvreader->fields;
+
+            $missing_columns = array();
+            foreach ($this->require_fields() as $k=>$v)
+            {
+                if(!in_array($v, $fields) && !in_array(strtolower($v), $fields) ) 
+                    $missing_columns[] = $v;                    
+            }
+            
+            if(count($missing_columns))            
+                throw new Exception('Incorrect columns appeared in CSV file. So please download sample CSV template');
+            
+            $rows = $this->csvreader->parse_file($data['full_path'], TRUE, $indexedArray = FALSE);
+
+            if(!count($rows))
+                throw new Exception('No records found in file.');
+
+            foreach ($rows as $row) 
+            {
+                if( strcmp('', trim($row['emp_code'])) === 0 || strcmp('', trim($row['emp_name'])) === 0  || strcmp('', trim($row['org_id'])) === 0 )
+                    continue;
+
+                if(!(int)$row['org_id'])
+                    continue;
+
+                $checkemp = $this->employee_model->get_where(array('emp_code'=>trim($row['emp_code']),'org_id'=>trim($row['org_id'])),'id','employee')->num_rows();
+
+                if($checkemp)
+                    continue;
+
+                $emp_data = array(                        
+                        'org_id'        => $row['org_id'],
+                        'emp_code'      => $row['emp_code'],
+                        'emp_name'      => $row['emp_name'],
+                        'date_arrival'  => $row['date_arrival'],
+                        'date_exit_leave'=> $row['date_exit_leave'],
+                        'date_exit_final'=> $row['date_exit_final'],
+                        'date_exit_absc'=> $row['date_exit_absc'],
+                        'current_status'=> $row['current_status'],
+                        'phone1'        => $row['phone1'],
+                        'phone2'        => $row['phone2'],
+                        'agency'        => $row['agency'],
+                        'designation'   => $row['designation'],                   
+                        'visa_designation'=> $row['visa_designation'],
+                        'dob'           => $row['dob'],
+                        'age'           => $row['age'],
+                        'joining_date'  => $row['joining_date'],
+                        'no_of_months_completed'=> $row['no_of_months_completed'],
+                        'nationality'   => $row['nationality']
+                );
+
+                $detail_data = array(
+                        'pp_number' => $row['pp_number'],
+                        'pp_validity' => $row['pp_validity'],
+                        'vp_number' => $row['vp_number'],
+                        'rp_number' => $row['rp_number'],
+                        'rp_validity' => $row['rp_validity'],
+                        'ot_rate' => $row['ot_rate'],
+                        'sot_rate' => $row['sot_rate'],
+                        'food_allowance' => $row['food_allowance'],
+                        'food_allowance_deduction' => $row['food_allowance_deduction'],
+                        'accomodation_allowance' => $row['accomodation_allowance'],
+                        'transport_allowance' => $row['transport_allowance'],
+                        'telephone_allowance' => $row['telephone_allowance'],
+                        'special_allowance' => $row['special_allowance'],
+                        'salary_advance' => $row['salary_advance'],
+                        'advancce_deduction' => $row['advancce_deduction'],
+                        'emp_qid' => $row['emp_qid'],
+                        'emp_visa_id' => $row['emp_visa_id'],
+                        'emp_bank_short_name' => $row['emp_bank_short_name'],
+                        'emp_account' => $row['emp_account'],
+                        'salary_frequency' => $row['salary_frequency'],
+                        'no_working_days' => $row['no_working_days'],
+                        'net_salary' => $row['net_salary'],
+                        'basic_salary' => $row['basic_salary'],
+                        'extra_hours' => $row['extra_hours'],
+                        'extra_income' => $row['extra_income'],
+                        'deductions' => $row['deductions'],
+                        'payment_type' => $row['payment_type']
+                );
+
+                $comments_data = array(
+                        'comments'    => $row['comments'],
+                        'future_data1'=>$row['future_data1'],
+                        'future_data2'=>$row['future_data2'],
+                        'future_data3'=>$row['future_data3'],
+                        'future_data4'=>$row['future_data4'],
+                        'future_data5'=>$row['future_data5']
+                );  
+
+                $emp_data['created_date'] = date('Y-m-d H:i:s'); 
+                $emp_data['updated_date'] = date('Y-m-d H:i:s');
+                $emp_data['created_id']   = get_current_user_id();  
+
+                //insert employee data
+                $insert_id = $this->employee_model->insert($emp_data);
+
+                //insert employee detail data
+                $detail_data['emp_id'] = $insert_id;
+                $this->employee_model->insert($detail_data,'employee_details');
+
+                //insert employee comments data
+                $comments_data['emp_id'] = $insert_id;
+                $this->employee_model->insert($comments_data,'employee_note');
+
+            }
+
+            array_map('unlink', glob("./uploads/*"));    
+
+            $message ='File imported successfully';
+            $status = 'success';
+
+        }
+        catch (Exception $e)
+        {
+            $status   = 'error';
+            $message  = $e->getMessage();                
+        }
+
+        $alertmsg = ($status == 'success')?'success_msg':'error_msg';
+        $this->session->set_flashdata($alertmsg,$message,TRUE);
+
+        redirect('employee');
+
+    }
+
     function delete($del_id)
     {
         $access_data = $this->employee_model->get_where(array("id"=>$del_id),'emp_code')->row_array();
@@ -312,6 +464,119 @@ class Employee extends Admin_Controller
         
         $this->_ajax_output($output, TRUE);
             
+    }
+
+    function require_fields(){
+
+
+        $fields = array('emp_code'=> 'emp_code','emp_name'=> 'emp_name','org_id'=> 'org_id','date_arrival'=> 'date_arrival','date_exit_leave'=> 'date_exit_leave',  'date_exit_final'=> 'date_exit_final','date_exit_absc'=> 'date_exit_absc','current_status'=> 'current_status','phone1'=> 'phone1','phone2'=> 'phone2','agency'=> 'agency',  'designation'=> 'designation',
+                'visa_designation'=> 'visa_designation','dob'=> 'dob','age'=> 'age','joining_date'=> 'joining_date','no_of_months_completed'=> 'no_of_months_completed','nationality'=> 'nationality','pp_number' => 'pp_number','pp_validity' => 'pp_validity','vp_number' => 'vp_number','rp_number' => 'rp_number','rp_validity' => 'rp_validity','ot_rate' => 'ot_rate','sot_rate' => 'sot_rate',
+                'food_allowance' => 'food_allowance','food_allowance_deduction' => 'food_allowance_deduction','accomodation_allowance' => 'accomodation_allowance','transport_allowance' => 'transport_allowance','telephone_allowance' => 'telephone_allowance','special_allowance' => 'special_allowance','salary_advance' => 'salary_advance',  'advancce_deduction' => 'advancce_deduction','emp_qid' => 'emp_qid',
+                'emp_visa_id' => 'emp_visa_id','emp_bank_short_name' => 'emp_bank_short_name','emp_account' => 'emp_account','salary_frequency' => 'salary_frequency','no_working_days' => 'no_working_days','net_salary' => 'net_salary','basic_salary' => 'basic_salary','extra_hours' => 'extra_hours','extra_income' => 'extra_income','deductions' => 'deductions','payment_type' => 'payment_type',
+                'comments'=>'comments','future_data1'=>'future_data1','future_data2'=>'future_data2','future_data3'=>'future_data3','future_data4'=>'future_data4','future_data5'=>'future_data5');               
+
+        return $fields;
+    }
+
+    public function template_download(){
+
+        $this->load->helper('csv_helper');
+
+        $data[] = $this->require_fields();
+        
+        array_to_csv($data,'employee_import.csv');
+            
+        exit;
+    }
+
+    function export(){
+
+        try
+        {
+            $form = $this->input->post();
+
+            $result = $this->employee_model->get_report();
+
+            $columns = $this->require_fields();
+
+            header('Content-type: application/vnd.ms-excel');
+            header('Content-Disposition: attachment; filename=Employee-report.xls');
+
+            $str = '<table><tr>';
+
+            foreach($columns as $key) {
+                $key = ucwords($key);
+                $str .= '<th>'.$key.'</th>';
+            }
+            $str .= '</tr>';
+
+            foreach($result as $ke => $res)
+            {
+                $str .= '<tr>';
+
+                $str .= '<td>'.$res['emp_code'].'</td>';
+                $str .= '<td>'.$res['emp_name'].'</td>';
+                $str .= '<td>'.$res['org_name'].'</td>';
+                $str .= '<td>'.$res['date_arrival'].'</td>';
+                $str .= '<td>'.$res['date_exit_leave'].'</td>';
+                $str .= '<td>'.$res['date_exit_final'].'</td>';
+                $str .= '<td>'.$res['date_exit_absc'].'</td>';
+                $str .= '<td>'.$res['current_status'].'</td>';
+                $str .= '<td>'.$res['phone1'].'</td>';
+                $str .= '<td>'.$res['phone2'].'</td>';
+                $str .= '<td>'.$res['agency'].'</td>';
+                $str .= '<td>'.$res['designation'].'</td>';
+                $str .= '<td>'.$res['visa_designation'].'</td>';
+                $str .= '<td>'.$res['dob'].'</td>';
+                $str .= '<td>'.$res['age'].'</td>';
+                $str .= '<td>'.$res['joining_date'].'</td>';
+                $str .= '<td>'.$res['no_of_months_completed'].'</td>';
+                $str .= '<td>'.$res['nationality'].'</td>';
+                $str .= '<td>'.$res['pp_number'].'</td>';
+                $str .= '<td>'.$res['pp_validity'].'</td>';
+                $str .= '<td>'.$res['vp_number'].'</td>';
+                $str .= '<td>'.$res['rp_number'].'</td>';
+                $str .= '<td>'.$res['rp_validity'].'</td>';
+                $str .= '<td>'.$res['ot_rate'].'</td>';
+                $str .= '<td>'.$res['sot_rate'].'</td>';
+                $str .= '<td>'.$res['food_allowance'].'</td>';
+                $str .= '<td>'.$res['food_allowance_deduction'].'</td>';
+                $str .= '<td>'.$res['accomodation_allowance'].'</td>';
+                $str .= '<td>'.$res['transport_allowance'].'</td>';
+                $str .= '<td>'.$res['telephone_allowance'].'</td>';
+                $str .= '<td>'.$res['special_allowance'].'</td>';
+                $str .= '<td>'.$res['salary_advance'].'</td>';
+                $str .= '<td>'.$res['advancce_deduction'].'</td>';
+                $str .= '<td>'.$res['emp_qid'].'</td>';
+                $str .= '<td>'.$res['emp_visa_id'].'</td>';
+                $str .= '<td>'.$res['emp_bank_short_name'].'</td>';
+                $str .= '<td>'.$res['emp_account'].'</td>';
+                $str .= '<td>'.$res['salary_frequency'].'</td>';
+                $str .= '<td>'.$res['no_working_days'].'</td>';
+                $str .= '<td>'.$res['net_salary'].'</td>';
+                $str .= '<td>'.$res['basic_salary'].'</td>';
+                $str .= '<td>'.$res['extra_hours'].'</td>';
+                $str .= '<td>'.$res['extra_income'].'</td>';
+                $str .= '<td>'.$res['deductions'].'</td>';
+                $str .= '<td>'.$res['payment_type'].'</td>';
+                $str .= '<td>'.$res['comments'].'</td>';
+                $str .= '<td>'.$res['future_data1'].'</td>';
+                $str .= '<td>'.$res['future_data2'].'</td>';
+                $str .= '<td>'.$res['future_data3'].'</td>';
+                $str .= '<td>'.$res['future_data4'].'</td>';
+                $str .= '<td>'.$res['future_data5'].'</td>';
+                
+                $str .= '</tr>';
+            }            
+
+        }
+        catch (Exception $e)
+        {
+            $status   = 'error';
+            $message  = $e->getMessage();                
+        }
+        echo $str;
+        exit;    
     }
     
 }

@@ -33,10 +33,10 @@ $config['organization_index'] = array(
 						'name'=>array('name'=>'Name', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),					
 						'short_name'=>array('name'=>'Short Name', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),					
 						'type'=>array('name'=>'Type', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),
-						'web_url'=>array('name'=>'Web address', 'data_type' => 'link', 'sortable' => FALSE, 'default_view'=>1)                             
+						'web_url'=>array('name'=>'Web address', 'data_type' => 'tablink', 'sortable' => FALSE, 'default_view'=>1)                             
 						),
-	"default_order"	=> "id",
-	"default_direction" => "DESC"
+	"default_order"	=> "name",
+	"default_direction" => "ASC"
 );
 
 
@@ -55,8 +55,8 @@ $config['employee_index'] = array(
 						'phone1'=>array('name'=>'Phone', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),
 						'nationality'=>array('name'=>'Nationality', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1)                               
 						),
-	"default_order"	=> "id",
-	"default_direction" => "DESC"
+	"default_order"	=> "emp_name",
+	"default_direction" => "ASC"
 );
 
 $config['timesheet_index'] = array(
@@ -64,15 +64,16 @@ $config['timesheet_index'] = array(
 	"init_scripts" => 'listing/init_scripts',
 	"advance_search_view" => 'frontend/timesheet/filter',
 	"base_url"	=> 	'/timesheet/index/',
-	"per_page"	=>	"20",
+	"per_page"	=>	"25",
 	"fields"	=> array(   
 						'emp_name'=>array('name'=>'Name', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),					
 						'emp_code'=>array('name'=>'Emp Code', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),					
 						'date'=>array('name'=>'Date', 'data_type' => 'date', 'sortable' => FALSE, 'default_view'=>1),
 						'hour'=>array('name'=>'Hours', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),                             
+						'type'=>array('name'=>'Type', 'data_type' => 'timesheet_type', 'sortable' => FALSE, 'default_view'=>1),
 						'project'=>array('name'=>'Project', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1)
 						),
-	"default_order"	=> "id",
-	"default_direction" => "DESC"
+	"default_order"	=> "emp_name,date",
+	"default_direction" => "ASC"
 );
 

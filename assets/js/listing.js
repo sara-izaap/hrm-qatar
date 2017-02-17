@@ -7,6 +7,8 @@
 		var timesheet_checkbox_data = [];
 		
 		var progress_bar_flag = false;
+
+		var selected_org = '';
 		
 		var grids = {};
 		grids.notes_table = {pagination:'notes_pagination', search_option:false,search_bar:false,sidebar:false};		
@@ -20,8 +22,11 @@
 		          return false;
 		        }  
 	  		});
-		}	
+		}
+
 		$.fn.zoomgrid = function( options ) { 
+
+			selected_org = $("#organizationlist").val();
 
 			//merge options with the default
 			options = $.extend($.fn.zoomgrid.defaults, options);
@@ -163,10 +168,15 @@
 				{
 					$.fn.get_advance_search_form();	
 					
-					//$('a').tooltip();
-					
-					
+					//$('a').tooltip();						
 				}
+				
+				if(current_controller=='timesheet'){
+
+					get_employeeslist(selected_org,timesheet_checkbox_data);
+
+				}		
+
 				
 			}, 'json');
 		};
@@ -189,8 +199,20 @@
 
 					init_checkbox(timesheet_checkbox_data);					
 
-					if(current_controller=='timesheet')
+					if(current_controller=='timesheet'){
+
 						init_daterangepicker($('.date_range').val());
+
+						$('.emp-list input').click(function(){
+
+							$('.empcheckbox').prop('checked', this.checked); 
+
+							$(".checkbox").checkboxradio({ icon: false });
+						    
+						}); 
+
+
+					}
 					
 					//reconstruct the advance serch form
 					/*
@@ -229,6 +251,7 @@
 				$('.empcheckbox:checked').each(function(){
 			          timesheet_checkbox_data[i++] = $(this).val();
 			    });
+
 			}
 
 			$.fn.display_grid(base_url+'/'+current_controller+'/'+current_method, 'data_table');
@@ -243,7 +266,11 @@
 				timesheet_checkbox_data = [];
 			}		
 
+			get_employeeslist('','');
+
 			$.fn.display_grid(base_url+'/'+current_controller+'/'+current_method, 'data_table');
+
+
 		};
 
 		$.fn.custom_search = function(field, txt, obj){

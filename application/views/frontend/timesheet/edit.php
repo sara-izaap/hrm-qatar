@@ -30,9 +30,15 @@
                 </div>
 
                 <div class="form-group col-md-6" data-error="">
+                  <label>Type</label>
+                      <?=form_dropdown('timesheet_type', array('Present'=>'Present','Absent'=>'Absent','Idle'=>'Idle','Weekend'=>'Weekend'), set_value('timesheet_type', $edit_data['type']), 'class="form-control"')?> 
+                </div>
+
+                <div class="form-group col-md-6" data-error="">
                   <label>Project</label>
                   <?=form_dropdown('project', array(''=>'Select Project')+ get_projects(), set_value('project', $edit_data['project']), 'class="form-control"')?> 
                 </div>
+
 
                 <div class="form-group col-md-6 <?php echo (form_error('purpose'))?'error':'';?>" data-error="">
                   <label>Purpose</label>

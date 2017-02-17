@@ -1,3 +1,4 @@
+<!--
 <div class="col-xs-12 table-sub-header text-right">
   <div class="row">
    <div class="div top-lisiting-search">
@@ -17,7 +18,7 @@
         </div>
       </div>
     </form>
-    <div class="advanced-search advancesearch">
+    
     </div>
     <div class="col-sm-5 entry-text text-right">
        <span class="col-sm-6 show-entry">Show entries:</span>
@@ -28,20 +29,28 @@
   </div>
 </div>
 </div>
+-->
 
-<!--Advanced Search Popup content starts here-->
-<div id="popOverBox" style="display: block;"></div>
+<div class="advanced-search advancesearch"> </div>
 
-<hr>
-  
-<div class="m_bottom clearfix">
+<div class="m_top m_bottom clearfix">
   <div class="col-md-5">
-     <input type="text" class="form-control col-sm-5" name="working_hours" id="working_hours" onkeypress="return numbersonly(event)" value="" placeholder="Enter hours (ex., 8 or 7.5) ">
-     <button type="button" class="btn btn-sm " onclick="create_timesheet(this)">Save</button>
- 
+    <div class="row">
+     <input type="text" class="form-control" name="working_hours" id="working_hours" onkeypress="return numbersonly(event)" value="" placeholder="Enter hours (ex.8)">
+     
+     <select name="timesheet_type" id="timesheet_type" class="form-control" style="display: inline-block; max-width: 110px;">
+      <option val="Present">Present</option>
+      <option val="Absent">Absent</option>
+      <option val="Idle">Idle</option>
+      <option val="Weekend">Weekend</option>
+     </select> 
+
+    <button type="button" class="btn btn-sm " onclick="create_timesheet(this)">Save</button>
+    </div>
   </div>  
   
   <div class="text-right col-md-4">
+    <div class="row">
     <form class="text-right" method="post" action="<?php echo site_url('timesheet/import');?>" enctype="multipart/form-data">
       <div class="browsefile">
         <input type="file" id="base-input" name="userfile" class="form-control form-input form-style-base">
@@ -50,6 +59,7 @@
       </div>
 
     </form>
+  </div>
   </div>
 
   <div class="text-right col-md-3">
@@ -65,6 +75,7 @@
     </div>
 
   </div>
+
   
 </div> 
 

@@ -135,7 +135,24 @@ function displayData($data = null, $type = 'string', $row = array(), $wrap_tag_o
             break;
         case 'link':
             $data = '<a href="'.$data.'">'.$data.'</a>';
-            break;        
+            break;
+
+        case 'tablink':
+            $data = '<a href="'.$data.'" target="_blank">'.$data.'</a>';
+            break;    
+        case 'timesheet_type':
+        
+                if($data == 'Present')
+                    $type = 'btn-success';
+                elseif($data == 'Absent')
+                    $type = 'btn-danger';
+                elseif($data == 'Idle')
+                    $type = 'btn-warning';
+                elseif($data == 'Weekend')
+                    $type = 'btn-info';
+
+                $data = '<button type="button" class="'.$type.' btn-xs">'.$data.'</button>';    
+                break;        
     }
     
     return $wrap_tag_open.$data.$wrap_tag_close;
@@ -202,6 +219,7 @@ function get_employees($org = '')
     if($org)
         $CI->db->where('org_id',$org);
 
+    $CI->db->order_by('emp_name','ASC');    
     $result = $CI->db->get('employee')->result_array();
 
     $emp = array();

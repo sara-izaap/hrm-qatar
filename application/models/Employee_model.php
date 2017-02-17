@@ -75,6 +75,21 @@ class Employee_model extends App_model {
 
         return $result;
     }
+
+     function get_report(){
+
+        $this->db->select('e.*,d.*,n.*,o.name as org_name');
+
+        $this->db->from('employee e');
+        $this->db->join("employee_details d","e.id=d.emp_id");
+        $this->db->join("employee_note n","e.id=n.emp_id");
+        $this->db->join("organization o","e.org_id=o.id");
+
+        $this->db->group_by("e.id");
+        $this->db->order_by("e.emp_name",'asc');
+
+        return $this->db->get()->result_array();
+    }
 	
     
 }
