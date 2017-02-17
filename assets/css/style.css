@@ -11768,7 +11768,7 @@ body .modal-backdrop {
 
 /* line 135, ../sass/style.scss */
 .fridayrow {
-  background-color: #FFE4B5; }
+  background-color: #FFE4B5 !important; }
 
 /* line 141, ../sass/style.scss */
 .table-sub-header {
