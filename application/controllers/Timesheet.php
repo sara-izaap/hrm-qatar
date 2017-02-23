@@ -105,7 +105,9 @@ class Timesheet extends Admin_Controller
                     $ins_data['hour']       = $hour;
                     $ins_data['type']       = $form['timesheet_type'];
                     $ins_data['project']    = $form['project'];
-                    $ins_data['purpose']    = '';                    
+                    $ins_data['purpose']    = '';   
+
+                    echo $ins_data['type'];die;                 
                    
                     $this->insert_and_update_timesheet($ins_data);
                     
@@ -230,7 +232,9 @@ class Timesheet extends Admin_Controller
                 if(!$checkemp)
                     continue;
 
-                $timestamp = strtotime($row['date']);
+                $newDate = date("Y-m-d", strtotime($row['date']));
+
+                $timestamp = strtotime($newDate);
 
                 $day = date('D', $timestamp);
 
@@ -241,7 +245,7 @@ class Timesheet extends Admin_Controller
 
                 $ins_data = array();
                 $ins_data['emp_code']   = trim($row['emp_code']);
-                $ins_data['date']       = trim($row['date']);
+                $ins_data['date']       = trim($newDate);
                 $ins_data['hour']       = trim($hour);
                 $ins_data['project']    = '';
                 $ins_data['purpose']    = trim($row['purpose']);
