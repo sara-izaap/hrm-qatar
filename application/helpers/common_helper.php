@@ -150,6 +150,8 @@ function displayData($data = null, $type = 'string', $row = array(), $wrap_tag_o
                     $type = 'btn-warning';
                 elseif($data == 'Weekend')
                     $type = 'btn-info';
+                elseif($data == 'Ramadan')
+                    $type = 'btn-primary';
 
                 $data = '<button type="button" class="'.$type.' btn-xs">'.$data.'</button>';    
                 break;        

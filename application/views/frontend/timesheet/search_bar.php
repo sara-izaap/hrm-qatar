@@ -43,6 +43,7 @@
       <option val="Absent">Absent</option>
       <option val="Idle">Idle</option>
       <option val="Weekend">Weekend</option>
+      <option val="Ramadan">Ramadan</option>
      </select> 
 
     <button type="button" class="btn btn-sm " onclick="create_timesheet(this)">Save</button>

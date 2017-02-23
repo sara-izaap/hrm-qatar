@@ -89,10 +89,20 @@ class Timesheet extends Admin_Controller
                     if(!check_is_working_day($dat))
                         continue;
 
+                    $timestamp = strtotime($dat);
+
+                    $day = date('D', $timestamp);
+
+
+                    if($day=="Fri") 
+                        $hour=0;
+                    else
+                        $hour=$form['hours'];
+
                     $ins_data = array();
                     $ins_data['emp_code']   = $emp;
                     $ins_data['date']       = $dat;
-                    $ins_data['hour']       = $form['hours'];
+                    $ins_data['hour']       = $hour;
                     $ins_data['type']       = $form['timesheet_type'];
                     $ins_data['project']    = $form['project'];
                     $ins_data['purpose']    = '';                    
@@ -220,10 +230,19 @@ class Timesheet extends Admin_Controller
                 if(!$checkemp)
                     continue;
 
+                $timestamp = strtotime($row['date']);
+
+                $day = date('D', $timestamp);
+
+                if($day=="Fri") 
+                  $hour=0;
+                else
+                  $hour=$row['hour'];
+
                 $ins_data = array();
                 $ins_data['emp_code']   = trim($row['emp_code']);
                 $ins_data['date']       = trim($row['date']);
-                $ins_data['hour']       = trim($row['hour']);
+                $ins_data['hour']       = trim($hour);
                 $ins_data['project']    = '';
                 $ins_data['purpose']    = trim($row['purpose']);
 

@@ -31,7 +31,7 @@
 
                 <div class="form-group col-md-6" data-error="">
                   <label>Type</label>
-                      <?=form_dropdown('timesheet_type', array('Present'=>'Present','Absent'=>'Absent','Idle'=>'Idle','Weekend'=>'Weekend'), set_value('timesheet_type', $edit_data['type']), 'class="form-control"')?> 
+                      <?=form_dropdown('timesheet_type', array('Present'=>'Present','Absent'=>'Absent','Idle'=>'Idle','Weekend'=>'Weekend','Ramadan'=>'Ramadan'), set_value('timesheet_type', $edit_data['type']), 'class="form-control"')?> 
                 </div>
 
                 <div class="form-group col-md-6" data-error="">
