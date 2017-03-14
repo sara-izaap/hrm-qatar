@@ -94,7 +94,7 @@ class Timesheet extends Admin_Controller
                     $day = date('D', $timestamp);
 
 
-                    if($day=="Fri") 
+                    if($day=="Fri" || empty($form['hours'])) 
                         $hour=0;
                     else
                         $hour=$form['hours'];
@@ -104,10 +104,11 @@ class Timesheet extends Admin_Controller
                     $ins_data['date']       = $dat;
                     $ins_data['hour']       = $hour;
                     $ins_data['type']       = $form['timesheet_type'];
-                    $ins_data['project']    = $form['project'];
-                    $ins_data['purpose']    = '';   
 
-                    echo $ins_data['type'];die;                 
+                    if($form['empproject'])
+                        $ins_data['project']    = $form['empproject'];
+
+                    $ins_data['purpose']    = '';   
                    
                     $this->insert_and_update_timesheet($ins_data);
                     
@@ -247,7 +248,7 @@ class Timesheet extends Admin_Controller
                 $ins_data['emp_code']   = trim($row['emp_code']);
                 $ins_data['date']       = trim($newDate);
                 $ins_data['hour']       = trim($hour);
-                $ins_data['project']    = '';
+                //$ins_data['project']    = '';
                 $ins_data['purpose']    = trim($row['purpose']);
 
                 $this->insert_and_update_timesheet($ins_data);
@@ -282,7 +283,10 @@ class Timesheet extends Admin_Controller
 
             $data['updated_id'] = get_current_user_id();
 
-            $this->timesheet_model->update($where, $data);
+            $day = date('D', strtotime($data['date']));
+
+            if($data['hour']!=0 || $day == 'Fri')
+                $this->timesheet_model->update($where, $data);
         }
         else
         {
@@ -449,7 +453,64 @@ class Timesheet extends Admin_Controller
         $output['status']  = "success";
         
         $this->_ajax_output($output, TRUE);
+    }
+
+    public function project(){
+
+        try
+        {
+
+            $output = array('status'=>'','message'=>'');
+
+            $this->form_validation->set_rules('project_name','Project Name','trim|required|callback_checkproject');
+            $this->form_validation->set_rules('description','Description','trim|required');
+
+            $this->form_validation->set_error_delimiters('', '');
+
+            if ( count($_POST) && $this->form_validation->run())
+            {
+                $ins_data= array();
+                $ins_data['name']         = $this->input->post('project_name');
+                $ins_data['description']  = $this->input->post('description');
+                $ins_data['status']       = 1;
+                $ins_data['created_date'] = date('Y-m-d H:i:s'); 
+
+                $this->timesheet_model->insert($ins_data,'projects');
+
+                $output['status']  = 'success';
+                $output['message'] = 'Project created sucessfully';
+            }
+            
+            $data['data']        = '';
+
+            $output['content'] = $this->load->view('frontend/timesheet/create_project',$data,TRUE);  
+
+        }    
+        catch (Exception $e)
+        {
+            $output['status']   = 'error';
+            $output['message']  = $e->getMessage();                
+        }
+        
+        if($this->input->is_ajax_request())
+            $this->_ajax_output($output, TRUE);   
+
     }  
+
+    function checkproject($name)
+    {
+        $where = array();
+     
+        $where['name'] = $name;
+
+        $result = $this->timesheet_model->get_where($where,'id','projects')->num_rows();
+     
+        if ($result) {
+            $this->form_validation->set_message('checkproject', 'This project already exists!');
+            return FALSE;
+        }
+        return TRUE;
+    }
     
 }
 ?>

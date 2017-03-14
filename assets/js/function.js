@@ -125,17 +125,21 @@ function create_timesheet(elm)
 	
 	var hour = $("#working_hours").val();
   var timesheet_type = $("#timesheet_type").val();
+  var empproject = $("#empproject").val();
 	
-	if(!hour){
-		alert('Please enter working hours!');
-		return false;
-	}
+  if(!hour && !empproject){
+    alert("Please enter hours or select project!");
+    return false;
+  }
 
+	if(!hour)
+		hour = 0;
+	
 	var data = {};
 
 	data = $("#advance_search_form").serialize();
 
-	data += "&hours="+hour+"&timesheet_type="+timesheet_type;
+	data += "&hours="+hour+"&empproject="+empproject+"&timesheet_type="+timesheet_type;
 
 	$.post(base_url+'timesheet/create',data,function(rdata){
 					
@@ -176,6 +180,36 @@ function edit_timesheet(action_type,edit_id)
       {
         $("#TimesheetEdit").html(rdata.content);
         $("#TimesheetEdit").modal('show');
+      } 
+
+  }, 'json');     
+  
+}
+
+function create_project(action_type)
+{
+  
+  action_type = action_type?action_type:'form';
+  
+  data = {};
+
+  if(action_type == 'process')
+    data = $("#create_project_form").serialize();
+
+
+  $.post(base_url+'timesheet/project',data,function(rdata){
+          
+      if(rdata.status == 'success')
+      {
+        $("#CreateProject").modal('hide');
+        refresh_grid();
+        service_message(rdata.status,rdata.message);
+        
+      }
+      else
+      {
+        $("#CreateProject").html(rdata.content);
+        $("#CreateProject").modal('show');
       } 
 
   }, 'json');     

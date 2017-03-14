@@ -34,11 +34,13 @@
 <div class="advanced-search advancesearch"> </div>
 
 <div class="m_top m_bottom clearfix">
-  <div class="col-md-5">
+  <div class="col-md-8">
     <div class="row">
      <input type="text" class="form-control" name="working_hours" id="working_hours" onkeypress="return numbersonly(event)" value="" placeholder="Enter hours (ex.8)">
      
-     <select name="timesheet_type" id="timesheet_type" class="form-control" style="display: inline-block; max-width: 110px;">
+     <?=form_dropdown('empproject', array(''=>'Select Project')+ get_projects(), '', 'id="empproject" class="form-control" style="display: inline-block;max-width:160px;"')?>   
+
+     <select name="timesheet_type" id="timesheet_type" class="form-control" style="display: inline-block; max-width: 120px;">
       <option val="Present">Present</option>
       <option val="Absent">Absent</option>
       <option val="Idle">Idle</option>
@@ -62,21 +64,6 @@
     </form>
   </div>
   </div>
-
-  <div class="text-right col-md-3">
-   
-    <div class="btn-group timesheet-downbload">
-      <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-       <i class="fa fa-download" aria-hidden="true"></i> Download
-      </button>
-      <div class="dropdown-menu">
-        <a class="dropdown-item" href="javascript:void(0);" onclick="export_timesheet('1')">Export by date wise</a>
-        <a class="dropdown-item" href="javascript:void(0);" onclick="export_timesheet('2')">Export by total hours</a>        
-      </div>
-    </div>
-
-  </div>
-
   
 </div> 
 
