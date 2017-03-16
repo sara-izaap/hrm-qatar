@@ -24,7 +24,7 @@ if ( ! function_exists('array_to_csv'))
 	{
 		if ($download != "")
 		{	
-			header('Content-Type: application/csv');
+			header('Content-Type: application/csv; charset=UTF-8');
 			header('Content-Disposition: attachement; filename="' . $download . '"');
 		}		
 

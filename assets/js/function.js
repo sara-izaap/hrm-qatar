@@ -203,6 +203,9 @@ function create_project(action_type)
       {
         $("#CreateProject").modal('hide');
         refresh_grid();
+        
+        $('.empproject').html(rdata.projects);
+
         service_message(rdata.status,rdata.message);
         
       }

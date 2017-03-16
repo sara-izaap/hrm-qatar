@@ -217,18 +217,19 @@ class Timesheet extends Admin_Controller
             
             $rows = $this->csvreader->parse_file($data['full_path'], TRUE, $indexedArray = FALSE);
 
+
             if(!count($rows))
                 throw new Exception('No records found in file.');
 
             foreach ($rows as $row) 
             {
-                if( strcmp('', trim($row['emp_code'])) === 0 || strcmp('', trim($row['date'])) === 0  || strcmp('', trim($row['hour'])) === 0 )
+                if( strcmp('', trim($row['empcode'])) === 0 || strcmp('', trim($row['date'])) === 0  || strcmp('', trim($row['hour'])) === 0 )
                     continue;
 
                 if(!check_is_working_day(trim($row['date'])))
                     continue;
 
-                $checkemp = $this->timesheet_model->get_where(array('emp_code'=>trim($row['emp_code'])),'id','employee')->num_rows();
+                $checkemp = $this->timesheet_model->get_where(array('emp_code'=>trim($row['empcode'])),'id','employee')->num_rows();
 
                 if(!$checkemp)
                     continue;
@@ -245,9 +246,10 @@ class Timesheet extends Admin_Controller
                   $hour=$row['hour'];
 
                 $ins_data = array();
-                $ins_data['emp_code']   = trim($row['emp_code']);
+                $ins_data['emp_code']   = trim($row['empcode']);
                 $ins_data['date']       = trim($newDate);
                 $ins_data['hour']       = trim($hour);
+                $ins_data['type']       = trim($row['type']);
                 //$ins_data['project']    = '';
                 $ins_data['purpose']    = trim($row['purpose']);
 
@@ -342,9 +344,10 @@ class Timesheet extends Admin_Controller
 
         $fields = array();
 
-        $fields['emp_code']='emp_code';  
+        $fields['empcode']='empcode';  
         $fields['date']='date';
         $fields['hour']='hour';
+        $fields['type']='type';
         $fields['purpose']='purpose';
 
         return $fields;
@@ -479,6 +482,8 @@ class Timesheet extends Admin_Controller
 
                 $output['status']  = 'success';
                 $output['message'] = 'Project created sucessfully';
+
+                $output['projects'] = form_dropdown('empproject', array(''=>'Select Project')+ get_projects(), '', 'id="empproject" class="form-control" style="display: inline-block;max-width:160px;"');
             }
             
             $data['data']        = '';

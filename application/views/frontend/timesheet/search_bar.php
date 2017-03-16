@@ -37,9 +37,9 @@
   <div class="col-md-8">
     <div class="row">
      <input type="text" class="form-control" name="working_hours" id="working_hours" onkeypress="return numbersonly(event)" value="" placeholder="Enter hours (ex.8)">
-     
-     <?=form_dropdown('empproject', array(''=>'Select Project')+ get_projects(), '', 'id="empproject" class="form-control" style="display: inline-block;max-width:160px;"')?>   
-
+     <span class="empproject">
+      <?=form_dropdown('empproject', array(''=>'Select Project')+ get_projects(), '', 'id="empproject" class="form-control" style="display: inline-block;max-width:160px;"')?>   
+     </span>
      <select name="timesheet_type" id="timesheet_type" class="form-control" style="display: inline-block; max-width: 120px;">
       <option val="Present">Present</option>
       <option val="Absent">Absent</option>
