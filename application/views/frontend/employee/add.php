@@ -289,9 +289,11 @@
           <a href="<?php echo site_url('employee');?>" class="btn btn-block active text-center">Back</a>
         </div>
         
+        <?php if(get_user_role() == '1'):?>
         <div class="form-group col-md-2">
           <button type="submit" class="btn btn-block">Save</button>
         </div>
+        <?php endif;?>
     
     </div>
 

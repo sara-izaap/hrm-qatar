@@ -51,7 +51,9 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default active" data-dismiss="modal">Close</button>
+        <?php if(get_user_role() == '1'):?>
         <button type="button" class="btn btn-primary" onclick="edit_timesheet('process','<?php echo $id;?>');">Save changes</button>
+        <?php endif;?>
       </div>
     </div>
   </div>

@@ -7,8 +7,9 @@
 
       <div class="col-md-6 action-buttons text-right">
 
-        <a href="javascript:void(0);" onclick="create_project('form')" class="btn active">Create New Project</a>        
-
+        <?php if(get_user_role() == '1'):?>
+          <a href="javascript:void(0);" onclick="create_project('form')" class="btn active">Create New Project</a>        
+        <?php endif;?>
         <a href="<?php echo site_url('timesheet/template_download');?> " class="btn active">Download Sample CSV</a>
         
         <div class="btn-group timesheet-downbload">

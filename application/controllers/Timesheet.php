@@ -30,9 +30,9 @@ class Timesheet extends Admin_Controller
          
         $this->_narrow_search_conditions = array("organization","project","date_range","emplist");
         
-        $str = '<a href="javascript:void(0);" data-original-title="Edit" data-toggle="tooltip" data-placement="top" class="table-action" onclick="edit_timesheet(\'form\',\'{id}\');"><i class="fa fa-edit edit"></i></a>
-                <a href="javascript:void(0);" data-original-title="Remove" data-toggle="tooltip" data-placement="top" class="table-action" onclick="delete_record(\'timesheet/delete/{id}\',this);"><i class="fa fa-trash-o trash"></i></a>
-                ';
+        $str = '<a href="javascript:void(0);" data-original-title="Edit" data-toggle="tooltip" data-placement="top" class="table-action" onclick="edit_timesheet(\'form\',\'{id}\');"><i class="fa fa-edit edit"></i></a>';
+        if(get_user_role() == '1')
+            $str .= '<a href="javascript:void(0);" data-original-title="Remove" data-toggle="tooltip" data-placement="top" class="table-action" onclick="delete_record(\'timesheet/delete/{id}\',this);"><i class="fa fa-trash-o trash"></i></a>';
  
         $this->listing->initialize(array('listing_action' => $str));
 

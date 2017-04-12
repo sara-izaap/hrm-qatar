@@ -29,12 +29,13 @@ class Organization extends Admin_Controller
                                     'c.web_url'    => 'Web Address',
                                     'c.email'      => 'Email'                                            
         );
+
          
         $this->_narrow_search_conditions = array("start_date");
         
-        $str = '<a href="'.site_url('organization/add/{id}').'" class="table-action"><i class="fa fa-edit edit"></i></a>
-                <a href="javascript:void(0);" data-original-title="Remove" data-toggle="tooltip" data-placement="top" class="table-action" onclick="delete_record(\'organization/delete/{id}\',this);"><i class="fa fa-trash-o trash"></i></a>
-                ';
+        $str = '<a href="'.site_url('organization/add/{id}').'" class="table-action"><i class="fa fa-edit edit"></i></a>';
+        if(get_user_role() == '1')    
+            $str .= '<a href="javascript:void(0);" data-original-title="Remove" data-toggle="tooltip" data-placement="top" class="table-action" onclick="delete_record(\'organization/delete/{id}\',this);"><i class="fa fa-trash-o trash"></i></a>';
  
         $this->listing->initialize(array('listing_action' => $str));
 
