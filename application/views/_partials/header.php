@@ -10,7 +10,7 @@
             <span class="icon-bar"></span>
           </button>
           <a class="navbar-brand" href="#">
-            <img src="<?php echo include_img_path();?>logo_new.png" alt="HR Management" />
+            <img src="<?php echo include_img_path();?>hrm-logo.png" alt="MIQAS HR Solutions" />
           </a>
         </div>
         <?php $curr_ctlr =  $this->uri->segment(1, 'index');?>
