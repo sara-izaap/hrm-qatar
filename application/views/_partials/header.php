@@ -53,17 +53,17 @@
               </a> 
             </li>
             
-            <li class="dropdown">
+            <li class="dropdown <?php echo ($curr_ctlr == 'reports')?"active":'';?>">
               <a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-sticky-note fa-fw"></i> 
                   Reports 
                   <span class="caret"></span>
               </a>
               <ul class="dropdown-menu">
-                <li><a href="javascript:void(0);">Reports</a></li>
-                  <li><a href="javascript:void(0);">Employees Export</a></li>
-                  <li><a href="javascript:void(0);">Monthly Timesheet</a></li>
-                  <li><a href="javascript:void(0);">Monthly Payroll</a></li>
+                <!-- <li><a href="javascript:void(0);">Reports</a></li> -->
+                  <li><a href="<?=site_url('reports/salary_report');?>">Salary Report</a></li>
+                  <!-- <li><a href="javascript:void(0);">Monthly Timesheet</a></li>
+                  <li><a href="javascript:void(0);">Monthly Payroll</a></li> -->
               </ul>
             </li>
           </ul>

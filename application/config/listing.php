@@ -69,11 +69,28 @@ $config['timesheet_index'] = array(
 						'emp_name'=>array('name'=>'Name', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),					
 						'emp_code'=>array('name'=>'Emp Code', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),					
 						'date'=>array('name'=>'Date', 'data_type' => 'date', 'sortable' => FALSE, 'default_view'=>1),
-						'hour'=>array('name'=>'Hours', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),                             
+						'hour'=>array('name'=>'Hours', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),
 						'type'=>array('name'=>'Type', 'data_type' => 'timesheet_type', 'sortable' => FALSE, 'default_view'=>1),
 						'project'=>array('name'=>'Project', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1)
 						),
 	"default_order"	=> "emp_name,date",
 	"default_direction" => "ASC"
 );
+
+
+$config['reports_salary_report'] = array(
+	"view"		=> 	'listing/listing',
+	"init_scripts" => 'listing/init_scripts',
+	"advance_search_view" => 'frontend/reports/filter',
+	"base_url"	=> 	'/reports/salary_report/',
+	"per_page"	=>	"5",
+	"fields"	=> array(   
+						'emp_name'=>array('name'=>'Name', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),					
+						'emp_code'=>array('name'=>'Emp Code', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),					
+						'designation'=>array('name'=>'Designation', 'data_type' => 'string', 'sortable' => FALSE, 'default_view'=>1),
+						'organization'=>array('name'=>'Organization', 'data_type' => 'string', 'sortable' => FALSE, 'default_view'=>1),),
+	"default_order"	=> "emp_name",
+	"default_direction" => "ASC"
+);
+
 
