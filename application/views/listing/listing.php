@@ -109,12 +109,11 @@
                 
 				<?php endforeach;?>
 
-	          <?php if($uri!= 'review' && $uri != 'schedule' && $uri != 'contact_form'){ ?>
+	          <?php if($uri== 'salary_report'){ ?>
 				<td>
 					<?php if(strcmp($listing_action, '') === 0):?>
-					<a class="btn btn-small" href="<?php echo site_url($this->uri->segment(1, 'index')."/view/". $item['id']);?>"
-						data-placement="top" data-toggle="tooltip"
-						data-original-title="view"> <i class="icon-eye-open"></i>
+					<a class="" href="<?php echo site_url($this->uri->segment(1, 'index')."/view_salary/".$item['id']."/".$item['e_month']."/".$item['e_year']);?>" target="_blank"
+						data-original-title="view"> <i class="fa fa-eye"></i> View
 					</a>
 					<?php else:?>
 						

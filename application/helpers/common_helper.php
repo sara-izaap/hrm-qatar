@@ -582,4 +582,116 @@ function is_valid_user($user_id = 0)
     return $result->num_rows()?TRUE:FALSE;
 }
 
+function get_working_days($year = '', $month = '')
+{
+  if ($year == '')
+    $year = date('Y');
+  if ($month == '')
+    $month = date('m');
+  $startdate = strtotime($year . '-' . $month . '-01');
+  $enddate = strtotime('+' . (date('t',$startdate) - 1). ' days',$startdate);
+  $currentdate = $startdate;
+  $return = intval((date('t',$startdate)),10);
+  while ($currentdate <= $enddate)
+  {
+    if ((date('D',$currentdate) == 'Fri'))
+    {
+      $return = $return - 1;
+    }
+    $currentdate = strtotime('+1 day', $currentdate);
+  }
+  return $return;
+}
+
+function get_employee_details($emp_id='')
+{
+  $CI = & get_instance();
+  $CI->load->model('reports_model');
+  $result = $CI->reports_model->get_employee_details($emp_id);
+  return $result;
+}
+
+function convert_number($number)
+{
+    if (($number < 0) || ($number > 999999999))
+    {
+      throw new Exception("Number is out of range");
+    }
+    
+    // exit;
+    $Gn = floor($number / 1000000);
+    /* Millions (giga) */
+    $number -= $Gn * 1000000;
+    $kn = floor($number / 1000);
+    /* Thousands (kilo) */
+    $number -= $kn * 1000;
+    $Hn = floor($number / 100);
+    /* Hundreds (hecto) */
+    $number -= $Hn * 100;
+    $Dn = floor($number / 10);
+    /* Tens (deca) */
+    $n = $number % 10;
+    /* Ones */
+    $res = "";
+    if ($Gn) {
+      $res .= convert_number($Gn) .  "Million";
+    }
+    if ($kn) {
+      $res .= (empty($res) ? "" : " ") .convert_number($kn) . " Thousand";
+    }
+    if ($Hn) {
+      $res .= (empty($res) ? "" : " ") .convert_number($Hn) . " Hundred";
+    }
+    $ones = array("", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen");
+    $tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", "Seventy", "Eigthy", "Ninety");
+    if ($Dn || $n) {
+      if (!empty($res)) {
+        $res .= " and ";
+      }
+      if ($Dn < 2) {
+        $res .= $ones[$Dn * 10 + $n];
+      } else {
+        $res .= $tens[$Dn];
+        if ($n) {
+          $res .= " " . $ones[$n];
+        }
+      }
+    }
+
+    if (empty($res))
+    {
+      $res = "zero";
+    }
+   
+   return $res;
+  }
+
+  function convert_to_paise($number)
+  {
+    $len = strlen(substr(strrchr($number, "."), 1));
+    $dec = substr($number,-2);
+    $decimal_words = "Only";
+    if($len>1)
+    {
+      $ones = array("", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen");
+      $tens = array("", "", "Twenty", "Thirty", "Fourty", "Fifty", "Sixty", "Seventy", "Eigthy", "Ninety");
+      if($dec > 19)
+      {
+        $dec1 = substr($dec, -2);
+        $decimal1 = substr($dec1,0,1);
+        $decimal2 = substr($dec1,1,2);
+        $decimal_words = " and ".$tens[$decimal1]." ".$ones[$decimal2]." cents Only";
+      }
+      else
+      {
+        if($len>1)
+          $dec1 = substr($dec, -2);
+        else
+          $dec1 = substr($dec, -1);
+        $decimal_words = " and ".$ones[$dec1]." cents Only";
+      }
+    }
+    return $decimal_words;
+  }
+
 ?>
