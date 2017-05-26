@@ -18,13 +18,28 @@ class Reports extends Admin_Controller
   }
   public function salary_report()
   {
+
   	$this->layout->add_javascripts(array('listing'));
     $this->load->library('listing');
     $this->simple_search_fields = array('e.emp_name' => 'Name','e.emp_code' => 'Employee Code');
     $this->_narrow_search_conditions = array("organization","year","month");
-    $str = '<a href="'.site_url('reports/view_salary/{id}').'" target="_blank" data-original-title="Edit" data-toggle="tooltip" data-placement="top" class="table-action" onclick="edit_timesheet(\'form\',\'{id}\');"><i class="fa fa-eye"></i> View</a>';
-    // $this->listing->initialize(array('listing_action' => $str));
+
+    $narrow_search_conditions = $this->session->userdata($this->namespace.'_search_narrow_conditions');
+
+    if(!isset($narrow_search_conditions['year']) || empty($narrow_search_conditions['year'])){
+           
+        $narrow_search_conditions = $this->session->userdata($this->namespace.'_search_narrow_conditions');
+        $narrow_search_conditions['year']  = '2017';
+        $narrow_search_conditions['month'] = '02';
+        $this->session->set_userdata($this->namespace.'_search_narrow_conditions', $narrow_search_conditions);
+    }  
+
+    $str = '<a href="'.site_url('reports/view_salary/{id}/'.$narrow_search_conditions['month'].'/'.$narrow_search_conditions['year']).'" target="_blank" data-original-title="Edit" data-toggle="tooltip" data-placement="top" class="table-action" onclick="edit_timesheet(\'form\',\'{id}\');"><i class="fa fa-eye"></i> View</a>';
+    $this->listing->initialize(array('listing_action' => $str));
+    
     $listing = $this->listing->get_listings('reports_model', 'listing');
+
+
     if($this->input->is_ajax_request())
     {
       $this->_ajax_output(array('listing' => $listing), TRUE);
