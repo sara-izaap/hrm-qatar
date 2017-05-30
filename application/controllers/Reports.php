@@ -90,6 +90,8 @@ class Reports extends Admin_Controller
 	public function salary_bank_transfer()
 	{
 		$org_id = isset($_POST['organization'])?$_POST['organization']:"1";
+		$year = isset($_POST['year'])?$_POST['year']:"2017";
+		$month = isset($_POST['month'])?$_POST['month']:"03";
 		$this->data['employee'] = $this->reports_model->get_org_employee($org_id);
 		$this->layout->view('frontend/reports/salary_bank_transfer');
 	}

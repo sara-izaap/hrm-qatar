@@ -48,10 +48,14 @@
     </div>
   </form>
 </div><br>
-<?php $org = isset($_POST['organization']) ? $_POST['organization'] : "1";?>
+<?php 
+  $org = isset($_POST['organization']) ? $_POST['organization'] : "1";
+  $year = isset($_POST['year']) ? $_POST['year'] : "2017";
+  $month = isset($_POST['month']) ? $_POST['month'] : "03";
+  ?>
 <div class="row">
   <div class="col-md-2 pull-right">
-    <a href="<?=site_url('reports/export');?>/<?=$org;?>" target="_blank" class="btn pull-right">Export</a>
+    <a href="<?=site_url('reports/export');?>/<?=$org."/".$year."/".$month;?>" target="_blank" class="btn pull-right">Export</a>
   </div>
   <div class="col-md-12">
     <div class="table-scrollable">
