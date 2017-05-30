@@ -54,9 +54,15 @@
   $month = isset($_POST['month']) ? $_POST['month'] : "01";
   ?>
 <div class="row">
+ <?php
+  if($employee)
+  {
+    ?>
   <div class="col-md-2 pull-right">
     <a href="<?=site_url('reports/export');?>/<?=$org."/".$year."/".$month;?>" target="_blank" class="btn pull-right">Export</a>
   </div>
+  <?php
+  }?>
   <div class="col-md-12">
     <div class="table-scrollable">
       <table class="table table-striped table-bordered table-hover">
