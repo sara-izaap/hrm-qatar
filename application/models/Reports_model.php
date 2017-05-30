@@ -15,12 +15,13 @@ class Reports_model extends App_model {
     function listing()
     {  
 		
-      $this->_fields = "a.*,d.name as organization,MONTH(b.date) as e_month,YEAR(b.date) as e_year";
-      $this->db->from('employee a');        
-      $this->db->join("timesheet b","b.emp_code=a.emp_code");
-      $this->db->join("organization d","d.id=a.org_id");
+      $this->_fields = "b.*,d.name as organization,MONTH(a.date) as e_month,YEAR(a.date) as e_year";
+      $this->db->from('timesheet a');        
+      $this->db->join("employee b","b.emp_code=a.emp_code");
+      $this->db->join("organization d","d.id=b.org_id");
      // $this->db->join("projects p","t.project=p.id",'left');
-      $this->db->group_by('a.id');              
+      $this->db->group_by('a.emp_code'); 
+      // $this->db->get();
       foreach ($this->criteria as $key => $value) 
       {
         if( !is_array($value) && strcmp($value, '') === 0 )
@@ -29,16 +30,17 @@ class Reports_model extends App_model {
         switch ($key)
         {
           case 'organization':
-              $this->db->where('a.org_id', $value);
+              $this->db->where('b.org_id', $value);
           break; 
           case 'year':
-              $this->db->where('YEAR(b.date)', $value);
+              $this->db->where('YEAR(a.date)', $value);
           break;
           case 'month':
-              $this->db->where('MONTH(b.date)', $value);
+              $this->db->where('MONTH(a.date)', $value);
           break;   
        }
-      }        
+      }
+      // echo $this->db->last_query();exit;
       return parent::listing();
     }
 

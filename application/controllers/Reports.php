@@ -31,7 +31,7 @@ class Reports extends Admin_Controller
 		{       
 			$narrow_search_conditions = $this->session->userdata($this->namespace.'_search_narrow_conditions');
 			$narrow_search_conditions['year']  = date("Y");
-			$narrow_search_conditions['month'] = "03";//date("m");
+			$narrow_search_conditions['month'] = date("m",strtotime("-1 month"));
 			$this->session->set_userdata($this->namespace.'_search_narrow_conditions', $narrow_search_conditions);
 		}  
 
@@ -90,14 +90,16 @@ class Reports extends Admin_Controller
 	public function salary_bank_transfer()
 	{
 		$org_id = isset($_POST['organization'])?$_POST['organization']:"1";
-		$year = isset($_POST['year'])?$_POST['year']:"2017";
-		$month = isset($_POST['month'])?$_POST['month']:"03";
+		$year = isset($_POST['year'])?$_POST['year']:date("Y");
+		$month = isset($_POST['month'])?$_POST['month']:"01";
 		$this->data['employee'] = $this->reports_model->get_org_employee($org_id,$month,$year);
 		$this->layout->view('frontend/reports/salary_bank_transfer');
 	}
 
 	public function export($org_id,$year,$month)
 	{
+		$this->data['year'] = $year;
+		$this->data['month'] = $month;
 		$this->data['organization'] = $this->reports_model->select(array("id"=>$org_id),"organization");
 		$this->data['employee'] = $this->reports_model->get_org_employee($org_id,$month,$year);
 		$this->load->view("frontend/reports/export",$this->data);

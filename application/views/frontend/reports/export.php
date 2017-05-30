@@ -1,8 +1,8 @@
 <?php
-$filename=$organization['name'].'-'.date("Y-m-d").'.xls'; //save our workbook as this file name
+/*$filename=$organization['name'].'-'.date("Y-m-d").'.xls'; //save our workbook as this file name
 header('Content-Type: application/vnd.ms-excel'); //mime type
 header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
-header('Cache-Control: max-age=0'); //no cache
+header('Cache-Control: max-age=0'); //no cache*/
 ?>
 <table class="table table-bordered">
   <thead>
@@ -42,12 +42,12 @@ header('Cache-Control: max-age=0'); //no cache
         foreach ($employee as $value)
         {
           $emp_id = $value['id'];
-          $total_working_days = get_working_days("2017","03");
+          $total_working_days = get_working_days($year,$month);
           $total_hours_in_month = $total_working_days * 8;
           $emp_code = $value['emp_code'];
-          $total_hours = $this->reports_model->get_total_working_hours($emp_code,"03");
-          $not = $this->reports_model->get_normal_ot($emp_code,"03");
-          $fot = $this->reports_model->get_friday_ot($emp_code,"03");
+          $total_hours = $this->reports_model->get_total_working_hours($emp_code,$month);
+          $not = $this->reports_model->get_normal_ot($emp_code,$month);
+          $fot = $this->reports_model->get_friday_ot($emp_code,$month);
           $total_working_hours = $total_hours - ($not + $fot);
           $basic_salary = $value['basic_salary'];
           $hourly_rate = number_format(($basic_salary / $total_working_days) / 8,2);
@@ -68,8 +68,8 @@ header('Cache-Control: max-age=0'); //no cache
               <td><?=$not+$fot;?></td>
               <td><?=number_format($extra,2);?></td>
               <td><?=$value['deductions'];?></td>
-              <td><?=$value['emp_qid'];?></td>
-              <td>Wages for March 2017</td>
+              <td><?=$value['basic_salary'] - $salary;?></td>
+              <td>Wages for <?=date("F",$month);?> 2017</td>
             </tr>
           <?php
         }

@@ -50,8 +50,8 @@
 </div><br>
 <?php 
   $org = isset($_POST['organization']) ? $_POST['organization'] : "1";
-  $year = isset($_POST['year']) ? $_POST['year'] : "2017";
-  $month = isset($_POST['month']) ? $_POST['month'] : "03";
+  $year = isset($_POST['year']) ? $_POST['year'] : date("Y");
+  $month = isset($_POST['month']) ? $_POST['month'] : "01";
   ?>
 <div class="row">
   <div class="col-md-2 pull-right">
@@ -76,6 +76,18 @@
               $i = 1;
               foreach ($employee as $value)
               {
+                $emp_id = $value['id'];
+                $total_working_days = get_working_days($year,$month);
+                $total_hours_in_month = $total_working_days * 8;
+                $emp_code = $value['emp_code'];
+                $total_hours = $this->reports_model->get_total_working_hours($emp_code,$month);
+                $not = $this->reports_model->get_normal_ot($emp_code,$month);
+                $fot = $this->reports_model->get_friday_ot($emp_code,$month);
+                $total_working_hours = $total_hours - ($not + $fot);
+                $basic_salary = $value['basic_salary'];
+                $hourly_rate = number_format(($basic_salary / $total_working_days) / 8,2);
+                $salary = $total_working_hours * $hourly_rate;
+                $extra =($not * ($hourly_rate + (($hourly_rate / 100) * 1.25))) + ($fot * ($hourly_rate + (($hourly_rate / 100) * 1.5)));
                 ?>
                   <tr>
                     <td><?=$i++;?></td>
@@ -86,13 +98,13 @@
                     <td><?=$value['emp_account'];?></td>
                     <td><?=$value['salary_frequency'];?></td>
                     <td><?=$value['no_working_days'];?></td>
-                    <td><?=$value['net_salary'];?></td>
+                    <td><?=$salary;?></td>
                     <td><?=$value['basic_salary'];?></td>
-                    <td><?=$value['extra_hours'];?></td>
+                    <td><?=$not+$fot;?></td>
                     <td><?=$value['extra_income'];?></td>
-                    <td><?=$value['deductions'];?></td>
+                    <td><?=$value['basic_salary'] - $salary;?></td>
                     <td><?=$value['emp_qid'];?></td>
-                    <td>Wages for March 2017</td>
+                    <td>Wages for <?php echo date('F',strtotime($month));?> 2017</td>
                   </tr>
                 <?php
               }
