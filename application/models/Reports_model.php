@@ -97,14 +97,10 @@ class Reports_model extends App_model {
       return $q->row_array();
     }
 
-    public function get_org_employee($where)
+    public function get_org_employee($where,$month,$year)
     {
-      $this->db->where("a.org_id",$where);
-      $this->db->select("a.*,b.*");
-      $this->db->from("employee a");
-      $this->db->join("employee_details b","a.id=b.emp_id");
-      $this->db->group_by("a.id");
-      $q = $this->db->get();
+      $q = $this->db->query("select b.*,c.* from timesheet a,employee b,employee_details c where b.org_id='".$where."' and a.emp_code=b.emp_code and MONTH(a.date)='".$month."' and YEAR(a.date)='".$year."' and c.emp_id=b.id group by a.emp_code");
+      
       // echo $this->db->last_query();exit;
       return $q->result_array();
     }

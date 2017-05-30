@@ -92,14 +92,14 @@ class Reports extends Admin_Controller
 		$org_id = isset($_POST['organization'])?$_POST['organization']:"1";
 		$year = isset($_POST['year'])?$_POST['year']:"2017";
 		$month = isset($_POST['month'])?$_POST['month']:"03";
-		$this->data['employee'] = $this->reports_model->get_org_employee($org_id);
+		$this->data['employee'] = $this->reports_model->get_org_employee($org_id,$month,$year);
 		$this->layout->view('frontend/reports/salary_bank_transfer');
 	}
 
-	public function export($org_id)
+	public function export($org_id,$year,$month)
 	{
 		$this->data['organization'] = $this->reports_model->select(array("id"=>$org_id),"organization");
-		$this->data['employee'] = $this->reports_model->get_org_employee($org_id);
+		$this->data['employee'] = $this->reports_model->get_org_employee($org_id,$month,$year);
 		$this->load->view("frontend/reports/export",$this->data);
 	}
 	public function export_timesheet($org_id='',$daterange='')
