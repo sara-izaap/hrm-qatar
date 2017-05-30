@@ -101,7 +101,7 @@
                     <td><?=$salary;?></td>
                     <td><?=$value['basic_salary'];?></td>
                     <td><?=$not+$fot;?></td>
-                    <td><?=$value['extra_income'];?></td>
+                    <td><?=number_format($extra,2);?></td>
                     <td><?=$value['basic_salary'] - $salary;?></td>
                     <td><?=$value['emp_qid'];?></td>
                     <td>Wages for <?php echo date('F',strtotime($month));?> 2017</td>
