@@ -158,6 +158,10 @@
     </div>
     <?php
   }
+  else
+  {
+    echo "No Records Found.";
+  }
   ?>
 <style type="text/css">
 /*th.rotate {
