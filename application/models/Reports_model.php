@@ -113,6 +113,7 @@ class Reports_model extends App_model {
       $this->db->where("a.date>=",$date[0]);
       $this->db->where("a.date<=",$date[1]);
       $this->db->where("b.org_id",$org);
+      $this->db->where("a.hour!=",'0');
       $this->db->select("a.*,b.id as emp_id");
       $this->db->from("timesheet a");
       $this->db->join("employee b","a.emp_code=b.emp_code");
