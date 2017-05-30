@@ -62,8 +62,8 @@
               <ul class="dropdown-menu">
                 <!-- <li><a href="javascript:void(0);">Reports</a></li> -->
                   <li><a href="<?=site_url('reports/salary_report');?>">Salary Report</a></li>
-                  <!-- <li><a href="javascript:void(0);">Monthly Timesheet</a></li>
-                  <li><a href="javascript:void(0);">Monthly Payroll</a></li> -->
+                  <li><a href="<?=site_url('reports/salary_bank_transfer');?>">Salary Bank Transfer</a></li>
+                  <li><a href="<?=site_url('reports/timesheet');?>">Monthly Timesheet</a></li>
               </ul>
             </li>
           </ul>

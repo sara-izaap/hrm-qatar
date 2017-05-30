@@ -48,6 +48,12 @@ class Reports_model extends App_model {
       return $q['hours'];
     }
 
+     public function get_total_working_hours_by_date($emp_id,$start_date='',$end_date='')
+    {
+      $q = $this->db->query("select sum(hour) as hours from timesheet where emp_code='".$emp_id."' and type!='Absent' and date>='".$start_date."' and date>='".$end_date."'")->row_array();
+      return $q['hours'];
+    }
+
     public function get_normal_ot($emp_id,$month)
     {
       $q = $this->db->query("select (sum(hour - 8)) as hours from timesheet where emp_code='".$emp_id."' and type!='Absent' and hour>'8' and MONTH(date)='".$month."' and DAYOFWEEK(date)!=6")->row_array();
@@ -59,6 +65,19 @@ class Reports_model extends App_model {
       $q = $this->db->query("select sum(hour) as hours from timesheet where emp_code='".$emp_id."' and MONTH(date)='".$month."' and DAYOFWEEK(date)=6")->row_array();
       return $q['hours'];
     }
+
+    public function get_normal_ot_by_date($emp_id,$start_date='',$end_date='')
+    {
+      $q = $this->db->query("select (sum(hour - 8)) as hours from timesheet where emp_code='".$emp_id."' and type!='Absent' and hour>'8' and date>='".$start_date."' and date<='".$end_date."' and DAYOFWEEK(date)!=6")->row_array();
+      return $q['hours'];
+    }
+
+    public function get_friday_ot_by_date($emp_id,$start_date='',$end_date='')
+    {
+      $q = $this->db->query("select sum(hour) as hours from timesheet where emp_code='".$emp_id."' and date>='".$start_date."' and date<='".$end_date."' and  DAYOFWEEK(date)=6")->row_array();
+      return $q['hours'];
+    }
+
 
     public function select($where,$table)
     {
@@ -76,6 +95,31 @@ class Reports_model extends App_model {
       $this->db->group_by("a.id");
       $q = $this->db->get();
       return $q->row_array();
+    }
+
+    public function get_org_employee($where)
+    {
+      $this->db->where("a.org_id",$where);
+      $this->db->select("a.*,b.*");
+      $this->db->from("employee a");
+      $this->db->join("employee_details b","a.id=b.emp_id");
+      $this->db->group_by("a.id");
+      $q = $this->db->get();
+      // echo $this->db->last_query();exit;
+      return $q->result_array();
+    }
+
+    public function get_timesheet($org,$date)
+    {
+      $date = explode("|",$date);
+      $this->db->where("a.date>=",$date[0]);
+      $this->db->where("a.date<=",$date[1]);
+      $this->db->where("b.org_id",$org);
+      $this->db->select("a.*,b.id as emp_id");
+      $this->db->from("timesheet a");
+      $this->db->join("employee b","a.emp_code=b.emp_code");
+      $q = $this->db->get();
+      return $q->result_array();
     }
 }
 ?>

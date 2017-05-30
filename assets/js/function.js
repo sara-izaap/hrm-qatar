@@ -21,8 +21,14 @@ $(function(){
         $('#fake-input').val($(this).val().replace("C:\\fakepath\\", ""));
     });
 
+  // $(".date_range_max").daterangepicker({
+  //      maxDate: 
+  // });
 
 });	
+function getFormatDate(d){
+    return d.getMonth()+1 + '/' + d.getDate() + '/' + d.getFullYear()
+}
 
 function init_daterangepicker(seldate)
 {

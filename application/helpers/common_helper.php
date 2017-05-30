@@ -694,4 +694,33 @@ function convert_number($number)
     return $decimal_words;
   }
 
+  function get_hourly_rate($emp_id,$date='')
+  {
+    $date = explode("|", $date);
+    $CI = & get_instance();
+    $CI->load->model('reports_model');
+    $total_working_days = get_working_days_by_date($date[0],$date[1]);
+    $total_hours_in_month = $total_working_days * 8;
+    $emp_code = get_employee_details($emp_id)['emp_code'];
+    $total_hours = $CI->reports_model->get_total_working_hours_by_date($emp_code,$date[0],$date[1]);
+    $not = $CI->reports_model->get_normal_ot_by_date($emp_code,$date[0],$date[1]);
+    $fot = $CI->reports_model->get_friday_ot_by_date($emp_code,$date[0],$date[1]);
+    $total_working_hours = $total_hours - ($not + $fot);
+    $basic_salary = get_employee_details($emp_id)['basic_salary'];
+    return $hourly_rate = number_format(($basic_salary / $total_working_days) / 8,2);
+  }
+
+function get_working_days_by_date($startDate, $endDate)
+{
+    $workingDays = 0;
+    $startTimestamp = strtotime($startDate);
+    $endTimestamp = strtotime($endDate);
+    for ($i = $startTimestamp; $i <= $endTimestamp; $i = $i + (60 * 60 * 24))
+    {
+        if (date("D", $i) != "Fri") $workingDays = $workingDays + 1;
+    }
+    return $workingDays;
+}
+
+
 ?>

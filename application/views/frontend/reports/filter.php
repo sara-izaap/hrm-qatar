@@ -5,7 +5,6 @@
 <form id="advance_search_form" method="POST">
   <div class="col-sm-2">
       <div class="filter-column">
-        
         <div class="filter-row">
           <label>Organization</label>
           <?=form_dropdown('organization', array(''=>'Select Organization')+ get_organizations(), $organization, ' id="organizationlist" class="form-control"')?>
@@ -14,23 +13,31 @@
           <label>Select Month</label>
           <select class="form-control" name="month">
             <option value="">--Select--</option>
-            <option value="01">January</option><option value="02">February</option><option value="03">March</option>
-            <option value="04">April</option><option value="05">May</option><option value="06">June</option>
-            <option value="07">July</option><option value="08">August</option><option value="09">September</option>
-            <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+            <option <?=($month=="01")?"selected":"";?> value="01">January</option>
+            <option <?=($month=="02")?"selected":"";?> value="02">February</option>
+            <option <?=($month=="03")?"selected":"";?> value="03">March</option>
+            <option <?=($month=="04")?"selected":"";?> value="04">April</option>
+            <option <?=($month=="05")?"selected":"";?> value="05">May</option>
+            <option <?=($month=="06")?"selected":"";?> value="06">June</option>
+            <option <?=($month=="07")?"selected":"";?> value="07">July</option>
+            <option <?=($month=="08")?"selected":"";?> value="08">August</option>
+            <option <?=($month=="09")?"selected":"";?> value="09">September</option>
+            <option <?=($month=="10")?"selected":"";?> value="10">October</option>
+            <option <?=($month=="11")?"selected":"";?> value="11">November</option>
+            <option <?=($month=="12")?"selected":"";?> value="12">December</option>
           </select>
         </div>
         <div class="filter-row">
-          <label>Select Month</label>
+          <label>Select Year</label>
           <select class="form-control" name="year">
             <option value="">--Select--</option>
             <?php
-              $year = date("Y");
-              $year1 = date("Y",strtotime("-3 years"));
-              for ($i=$year1; $i <= $year; $i++)
+              $year1 = date("Y");
+              $year2 = date("Y",strtotime("-3 years"));
+              for ($i=$year1; $i >= $year2; $i--)
               { 
                 ?>
-                  <option value="<?=$i;?>"><?=$i;?></option>
+                  <option <?=($year==$i)?"selected":"";?> value="<?=$i;?>"><?=$i;?></option>
                 <?php
               }
             ?>

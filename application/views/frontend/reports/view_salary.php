@@ -61,10 +61,14 @@
 						<td width="550" class="orange-bg">Overtime (N.O.T + F.O.T)</td>
 						<td class="text-center">
 							<?php
+							$overtime = 0;
+							if($not || $fot)
+							{
 									$not_rate = number_format($hourly_rate + (($hourly_rate / 100) * 1.25),2);
 									$fot_rate = number_format($hourly_rate + (($hourly_rate / 100) * 1.5),2);
 									echo $not." * ".$not_rate." + ".$fot." * ".$fot_rate." = ";
 									echo $overtime = number_format(($not * $not_rate) + ($fot * $fot_rate),2);
+							}
 							?>	
 						</td>
 					</tr>
@@ -72,8 +76,8 @@
 						<td><b>Total Earnings</b></td>
 						<td class="text-center">
 							<b><?php
-									$total_earn=$overtime+ ($worked_hours * $hourly_rate)+$employee['food_allowance'];
-									echo number_format($total_earn,2);
+								$total_earn=($worked_hours * $hourly_rate) + $overtime +$employee['food_allowance']+$employee['special_allowance'];
+								echo number_format($total_earn,2);
 								?></b>
 						</td>
 					</tr>
@@ -196,3 +200,7 @@
     vertical-align: top;
 }
 </style>
+
+<script type="text/javascript">
+	// window.print();
+</script>

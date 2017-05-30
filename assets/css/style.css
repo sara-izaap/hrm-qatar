@@ -12243,3 +12243,20 @@ hr {
     padding-left: 15px;
     padding-top: 15px;
     border-left: 1px solid rgba(106, 121, 135, 0.5); }
+
+.table-scrollable {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border: 1px solid #dddddd;
+    margin: 10px 0 !important;
+}
+.table-scrollable > .table {
+    width: 100% !important;
+    margin: 0 !important;
+    margin-bottom: 0;
+    background-color: #fff;
+}
+.table-scrollable > .table > thead > tr > th, .table-scrollable > .table > tbody > tr > th, .table-scrollable > .table > tfoot > tr > th, .table-scrollable > .table > tfoot > tr > th, .table-scrollable > .table > tfoot > tr > td {
+    white-space: nowrap;
+}
