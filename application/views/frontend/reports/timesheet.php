@@ -182,3 +182,6 @@ th.rotate {
 }
   
 </style>
+<script type="text/javascript">
+  window.print();
+</script>
