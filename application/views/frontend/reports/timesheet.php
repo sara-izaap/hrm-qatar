@@ -42,18 +42,16 @@
     // echo "<pre>";print_r($dates);
     ?>
     <div class="row">
-    <div class="col-md-2 pull-right">
-      <a href="<?=site_url('reports/export_timesheet');?>/<?=$org_id."/".$daterange;?>" class="btn pull-right">Export</a>
+    <div class="col-md-5 pull-right">
+      <a href="<?=site_url('reports/export_timesheet');?>/<?=$org_id."/".$daterange."/xls";?>" class="btn pull-right">Export as XLS</a>
+      <a href="<?=site_url('reports/export_timesheet');?>/<?=$org_id."/".$daterange."/pdf";?>" class="btn pull-right">Save as PDF</a>
     </div>
     <br><br><?php $dd = explode("|",$_POST['daterange']);?>
     <div class="col-md-12">
-      <table border="1">
+      <table border="1" class="timesheet-full">
         <thead>
           <tr>
-            <th colspan="<?=$colspan;?>" style="text-align:center">Timesheet <?=date("F Y",strtotime($dd[1]));?> - MIQAS SOLUTIONS W.L.L PEARL 2</th>
-          </tr>
-          <tr>
-            <th colspan="<?=$colspan;?>"  style="text-align:center">Time sheet march 2017 - MIQAS SOLUTIONS W.L.L PEARL 2</th>
+            <th colspan="<?=$colspan;?>"  style="text-align:center">Timesheet <?=date("F Y",strtotime($dd[1]));?> - MIQAS SOLUTIONS W.L.L PEARL 2</th>
           </tr>
            <tr>
           <th colspan="<?=$colspan;?>">&nbsp;</th>
@@ -164,7 +162,7 @@
   }
   ?>
 <style type="text/css">
-/*th.rotate {
+th.rotate {
  
   height: 140px;
   white-space: nowrap;
@@ -175,14 +173,29 @@ th.rotate > div {
   width: 30px;
 }
 th.rotate > div > span {
-  padding: 5px 10px;
+  padding: 0px 22px;
+    position: relative;
+    left: 0px;
+    top: -18px;
 }
 
 th.rotate {
   height: 140px;
   white-space: nowrap;
-}*/
-.bg-grey{background: #adadad;}
 }
+.bg-grey
+{
+  background: #adadad;
+}
+.timesheet-full 
+{
+ width: 100%; 
+ margin-bottom: 20px;
+}
+.timesheet-full th, .timesheet-full td 
+{
+  text-align: center;
+}
+
   
 </style>

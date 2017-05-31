@@ -1,4 +1,13 @@
 <?php
+if($save=="xls")
+{
+  $filename = "Timesheet-".$daterange.".xls";
+  header('Content-Type: application/vnd.ms-excel');
+  header('Content-Disposition: attachment;filename="'.$filename.'"');
+  header('Cache-Control: max-age=0');
+  // If you're serving to IE 9, then the following may be needed
+  header('Cache-Control: max-age=1');
+}
 if($timesheet)
 {
   $dates = [];
@@ -10,14 +19,12 @@ if($timesheet)
   // echo "<pre>";print_r($dates);
   $dd = explode("|",$daterange);
   ?>
-  <table border="1">
+  <table border="1" class="timesheet-full">
     <thead>
       <tr>
         <th colspan="<?=$colspan;?>" style="text-align:center">Timesheet <?=date("F Y",strtotime($dd[1]));?> - MIQAS SOLUTIONS W.L.L PEARL 2</th>
       </tr>
-      <tr>
-        <th colspan="<?=$colspan;?>"  style="text-align:center">Time sheet march 2017 - MIQAS SOLUTIONS W.L.L PEARL 2</th>
-      </tr>
+      
        <tr>
       <th colspan="<?=$colspan;?>">&nbsp;</th>
       </tr>
@@ -119,7 +126,51 @@ if($timesheet)
   </table>
   <?php
 }
+if($save=="pdf")
+{
 ?>
+
 <script type="text/javascript">
   window.print();
 </script>
+<?php
+}?>
+
+<style type="text/css">
+th.rotate {
+ 
+  height: 140px;
+  white-space: nowrap;
+}
+
+th.rotate > div {
+  transform: translate(25px, 51px) rotate(270deg);
+  width: 30px;
+}
+th.rotate > div > span {
+  padding: 0px 22px;
+    position: relative;
+    left: 0px;
+    top: -18px;
+}
+
+th.rotate {
+  height: 140px;
+  white-space: nowrap;
+}
+.bg-grey
+{
+  background: #adadad;
+}
+.timesheet-full 
+{
+ width: 100%; 
+ margin-bottom: 20px;
+}
+.timesheet-full th, .timesheet-full td 
+{
+  text-align: center;
+}
+
+  
+</style>
