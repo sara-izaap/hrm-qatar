@@ -19,9 +19,9 @@ class Reports_model extends App_model {
       $this->db->from('timesheet a');        
       $this->db->join("employee b","b.emp_code=a.emp_code");
       $this->db->join("organization d","d.id=b.org_id");
-     // $this->db->join("projects p","t.project=p.id",'left');
+
       $this->db->group_by('a.emp_code'); 
-      // $this->db->get();
+
       foreach ($this->criteria as $key => $value) 
       {
         if( !is_array($value) && strcmp($value, '') === 0 )
@@ -40,7 +40,7 @@ class Reports_model extends App_model {
           break;   
        }
       }
-      // echo $this->db->last_query();exit;
+
       return parent::listing();
     }
 

@@ -5,39 +5,41 @@ require_once(APPPATH."libraries/Admin_controller.php");
 class Reports extends Admin_Controller 
 {
 	
-	protected $_timesheet_validation_rules =array (
-																		array('field' => 'organization', 'label' => 'Organization', 'rules' => 'trim|required'));
+	protected $_timesheet_validation_rules =array (array('field' => 'organization', 'label' => 'Organization', 'rules' => 'trim|required'));
 
 	function __construct()
 	{
 		parent::__construct();  
 		if(!is_logged_in())
 			redirect('login');
+
 		$this->load->model('reports_model');
 	}
+
 	public function index()
 	{
-		redirect('reports/salary_report');
-	}
-	public function salary_report()
-	{
+		//$this->output->enable_profiler(TRUE);
+		$this->load->library('listing');
 
 		$this->layout->add_javascripts(array('listing'));
-		$this->load->library('listing');
+		
 		$this->simple_search_fields = array();
 		$this->_narrow_search_conditions = array("organization","month","year");
+
 		$narrow_search_conditions = $this->session->userdata($this->namespace.'_search_narrow_conditions');
 		if(!isset($narrow_search_conditions['year']) || empty($narrow_search_conditions['year']))
 		{       
-			$narrow_search_conditions = $this->session->userdata($this->namespace.'_search_narrow_conditions');
-			$narrow_search_conditions['year']  = date("Y");
-			$narrow_search_conditions['month'] = date("m",strtotime("-1 month"));
+			$narrow_search_conditions['year']  = date("Y",strtotime('first day of last month'));
+			$narrow_search_conditions['month'] = date("m",strtotime('first day of last month'));
 			$this->session->set_userdata($this->namespace.'_search_narrow_conditions', $narrow_search_conditions);
-		}  
+		}  		
 
-		$str = '<a href="'.site_url('reports/view_salary/{id}/'.$narrow_search_conditions['month'].'/'.$narrow_search_conditions['year']).'" data-original-title="Edit" data-toggle="tooltip" data-placement="top" class="table-action" onclick="edit_timesheet(\'form\',\'{id}\');"><i class="fa fa-eye"></i> View</a>';
+		$str = '<a href="'.site_url('reports/view_salary/{id}/{e_month}/{e_year}').'" data-original-title="Edit" data-toggle="tooltip" data-placement="top" class="table-action" onclick="edit_timesheet(\'form\',\'{id}\');"><i class="fa fa-eye"></i> View</a>';
+		
 		$this->listing->initialize(array('listing_action' => $str));    
+
 		$listing = $this->listing->get_listings('reports_model', 'listing');
+
 		if($this->input->is_ajax_request())
 		{
 			$this->_ajax_output(array('listing' => $listing), TRUE);
@@ -50,6 +52,7 @@ class Reports extends Admin_Controller
 		$this->data['search_bar'] = $this->load->view('frontend/reports/search_bar', $this->data, TRUE);
 		$this->data['listing'] = $listing;
 		$this->data['grid'] = $this->load->view('listing/view', $this->data, TRUE);
+
 		$this->layout->view('frontend/reports/salary_report');
 	}
 

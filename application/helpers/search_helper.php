@@ -32,6 +32,15 @@ if (!function_exists('prepare_search_conditions')) {
                 $value = $CI->session->set_userdata($session_namespace, $field);    
             }
 
+            if ($value == FALSE && $session_namespace == 'reports_index_search_narrow_conditions') {
+
+                $value = '';
+
+               if(isset($CI->session->userdata[$session_namespace][$field])) 
+                $value = (!isset($CI->session->userdata[$session_namespace][$field])) ? '' : $CI->session->userdata[$session_namespace][$field];
+                
+            }
+
             $conditions[$field] = is_null($value) ? null: $value;
         }
 

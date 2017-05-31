@@ -78,12 +78,12 @@ $config['timesheet_index'] = array(
 );
 
 
-$config['reports_salary_report'] = array(
+$config['reports_index'] = array(
 	"view"		=> 	'listing/listing',
 	"init_scripts" => 'listing/init_scripts',
 	"advance_search_view" => 'frontend/reports/filter',
-	"base_url"	=> 	'/reports/salary_report/',
-	"per_page"	=>	"5",
+	"base_url"	=> 	'/reports/index/',
+	"per_page"	=>	"20",
 	"fields"	=> array(   
 						'emp_name'=>array('name'=>'Name', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),					
 						'emp_code'=>array('name'=>'Emp Code', 'data_type' => 'String', 'sortable' => FALSE, 'default_view'=>1),					
