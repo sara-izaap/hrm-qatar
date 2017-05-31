@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class="form-grid">
-      <div class="form-group col-md-4 <?php echo (form_error('month'))?'error':'';?>" data-error="<?php echo (form_error('month'))? form_error('month'):'';?>">
+      <div class="form-group col-md-4">
           <label required>Month</label>
           <select class="form-control" name="month">
             <option value="01">January</option><option value="02">February</option><option value="03">March</option>
@@ -26,8 +26,8 @@
       </div>
     </div>
     <div class="form-grid">
-      <div class="form-group col-md-4 <?php echo (form_error('year'))?'error':'';?>" data-error="<?php echo (form_error('year'))? form_error('year'):'';?>">
-        <label>Select Month</label>
+      <div class="form-group col-md-4">
+        <label required="">Select Year</label>
         <select class="form-control" name="year">
           <?php
             $year = date("Y");
@@ -43,8 +43,8 @@
       </div>
     </div>       
 
-    <div class="form-grid col-md-2 pull-right">
-      <button class="btn btn-success pull-right" type="submit">Generate Timesheet</button>
+    <div class="form-grid col-md-1 col-md-offset-5">
+      <button class="btn btn-success" type="submit">Submit</button>
     </div>
   </form>
 </div><br>
@@ -52,7 +52,7 @@
   $org = isset($_POST['organization']) ? $_POST['organization'] : "1";
   $year = isset($_POST['year']) ? $_POST['year'] : date("Y");
   $month = isset($_POST['month']) ? $_POST['month'] : "01";
-  ?>
+?>
 <div class="row">
  <?php
   if($employee)
@@ -93,7 +93,7 @@
                 $basic_salary = $value['basic_salary'];
                 $hourly_rate = number_format(($basic_salary / $total_working_days) / 8,2);
                 $salary = $total_working_hours * $hourly_rate;
-                $extra =($not * ($hourly_rate + (($hourly_rate / 100) * 1.25))) + ($fot * ($hourly_rate + (($hourly_rate / 100) * 1.5)));
+                $extra =($not * ($hourly_rate + (($hourly_rate / 100) * 1.25))) + ($fot * ($hourly_rate + (($hourly_rate / 100) * 1.5))) + ($value['food_allowance'] * ceil($total_working_hours/8)) + ($value['special_allowance'] * ceil($total_working_hours/8));
                 ?>
                   <tr>
                     <td><?=$i++;?></td>
@@ -103,13 +103,13 @@
                     <td><?=$value['emp_bank_short_name'];?></td>
                     <td><?=$value['emp_account'];?></td>
                     <td><?=$value['salary_frequency'];?></td>
-                    <td><?=$value['no_working_days'];?></td>
+                    <td><?=ceil($total_working_hours/8);?></td>
                     <td><?=$salary;?></td>
                     <td><?=$value['basic_salary'];?></td>
                     <td><?=$not+$fot;?></td>
                     <td><?=number_format($extra,2);?></td>
                     <td><?=$value['basic_salary'] - $salary;?></td>
-                    <td><?=$value['emp_qid'];?></td>
+                    <td><?=$value['payment_type'];?></td>
                     <td>Wages for <?php echo date('F',strtotime($month));?> 2017</td>
                   </tr>
                 <?php

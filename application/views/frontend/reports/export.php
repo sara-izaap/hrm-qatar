@@ -1,8 +1,8 @@
 <?php
-$filename=$organization['name'].'-'.date("Y-m-d").'.xls'; //save our workbook as this file name
+/*$filename=$organization['name'].'-'.date("Y-m-d").'.xls'; //save our workbook as this file name
 header('Content-Type: application/vnd.ms-excel'); //mime type
 header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
-header('Cache-Control: max-age=0'); //no cache
+header('Cache-Control: max-age=0'); //no cache*/
 ?>
 <table class="table table-bordered">
   <thead>
@@ -14,7 +14,7 @@ header('Cache-Control: max-age=0'); //no cache
       <td></td>
       <td><?=date('Y-m-d');?></td>
       <td><?=date('H:i');?></td>
-      <td></td>
+      <td><?=$organization['registration_no'];?></td>
       <td></td>
       <td><?=$organization['short_name'];?></td>
       <td></td>
@@ -52,7 +52,7 @@ header('Cache-Control: max-age=0'); //no cache
           $basic_salary = $value['basic_salary'];
           $hourly_rate = number_format(($basic_salary / $total_working_days) / 8,2);
           $salary = $total_working_hours * $hourly_rate;
-          $extra =($not * ($hourly_rate + (($hourly_rate / 100) * 1.25))) + ($fot * ($hourly_rate + (($hourly_rate / 100) * 1.5)));
+          $extra =($not * ($hourly_rate + (($hourly_rate / 100) * 1.25))) + ($fot * ($hourly_rate + (($hourly_rate / 100) * 1.5))) + ($value['food_allowance'] * ceil($total_working_hours/8)) + ($value['special_allowance'] * ceil($total_working_hours/8));
           ?>
             <tr>
               <td><?=$i++;?></td>
@@ -62,13 +62,13 @@ header('Cache-Control: max-age=0'); //no cache
               <td><?=$value['emp_bank_short_name'];?></td>
               <td><?=$value['emp_account'];?></td>
               <td><?=$value['salary_frequency'];?></td>
-              <td><?=$total_working_days;?></td>
+              <td><?=ceil($total_working_hours/8);?></td>
               <td><?=$salary;?></td>
               <td><?=$value['basic_salary'];?></td>
               <td><?=$not+$fot;?></td>
               <td><?=number_format($extra,2);?></td>
-              <td><?=$value['deductions'];?></td>
               <td><?=$value['basic_salary'] - $salary;?></td>
+              <td><?=$value['payment_type'];?></td>
               <td>Wages for <?=date("F",$month);?> 2017</td>
             </tr>
           <?php
