@@ -1,6 +1,10 @@
 <div class="container">
 	<div class="row">
-		<div class="col-md-12">
+		<div class="col-md-2 pull-left  print-btn">
+			<br>
+			<a class="btn" href="javascript:;" onclick="window.print();">Print</a>
+		</div>
+		<div class="col-md-10">
 			<div class="logo pull-right">
 				<img src="<?=base_url();?>assets/images/logo.jpg">
 			</div>
@@ -170,9 +174,12 @@
     margin-right: auto;
     margin-left: auto;
 	}
+	.col-md-2 {
+    width: 16.66666667%;
+}
 	.table-bordered {border: 1px solid #000;}
 	.col-md-12{width: 100%;position: relative;min-height: 1px;padding-right: 15px;padding-left: 15px;}
-	.pull-right{float: right;}
+	.pull-right{float: right;}.pull-left{float: left;}
 	.text-center{text-align: center;}
 	.margin-top-50{margin-top: 50px;}.margin-top-20{margin-top: 20px;}
 	.td-background{background: #ccc;}
@@ -207,8 +214,16 @@
     line-height: 1.42857143;
     vertical-align: top;
 }
+.btn{    background-color: #064ba8;
+    -moz-border-radius: 50px;
+    -webkit-border-radius: 50px;
+    border-radius: 50px;
+    color: #fff;
+    font-size: 16px;
+    padding: 5px 15px;
+    border: 2px solid transparent;}
+    a{text-decoration: none;}
+    @media print{.print-btn{display: none;}}
 </style>
 
-<script type="text/javascript">
-	 window.print();
-</script>
+

@@ -44,7 +44,7 @@
     <div class="row">
     <div class="col-md-5 pull-right">
       <a href="<?=site_url('reports/export_timesheet');?>/<?=$org_id."/".$daterange."/xls";?>" class="btn pull-right">Export as XLS</a>
-      <a href="<?=site_url('reports/export_timesheet');?>/<?=$org_id."/".$daterange."/pdf";?>" class="btn pull-right">Save as PDF</a>
+      <a href="<?=site_url('reports/export_timesheet');?>/<?=$org_id."/".$daterange."/pdf";?>" target="_blank" class="btn pull-right">Save as PDF</a>
     </div>
     <br><br><?php $dd = explode("|",$_POST['daterange']);?>
     <div class="col-md-12">
