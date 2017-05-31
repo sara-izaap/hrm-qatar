@@ -76,7 +76,8 @@
 						<td><b>Total Earnings</b></td>
 						<td class="text-center">
 							<b><?php
-								$total_earn=($worked_hours * $hourly_rate) + $overtime +$employee['food_allowance']+$employee['special_allowance'];
+								$total_earn=($worked_hours * $hourly_rate) + $overtime + $employee['food_allowance']+$employee['special_allowance'];
+								$earn = ($worked_hours * $hourly_rate) + $overtime;
 								echo number_format($total_earn,2);
 								?></b>
 						</td>
@@ -105,8 +106,12 @@
 						<td width="550" class="red"><b>Net Salary</b></td>
 						<td class="text-center">
 							<?php
-								$net_salary=$total_earn - $employee['advancce_deduction'];
-								echo  number_format($net_salary,2);
+							$net_salary = "0.00";
+								if($earn>0)
+								{
+									$net_salary=$total_earn - $employee['advancce_deduction'];
+									echo  number_format($net_salary,2);
+								}
 							?>
 						</td>
 					</tr>
@@ -135,7 +140,10 @@
 					</tr>
 					<tr>
 						<td colspan="2">
-							<b>Amount in Words : <?=convert_number($net_salary)." QARs ".convert_to_paise($net_salary);?></b>
+							<?php
+								if($net_salary>0){?>
+								<b>Amount in Words : <?=convert_number($net_salary)." QARs ".convert_to_paise($net_salary);?></b>
+								<?php }?>
 						</td>
 					</tr>
 					<tr>

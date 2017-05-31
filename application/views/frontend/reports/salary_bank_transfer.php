@@ -54,15 +54,16 @@
   $month = isset($_POST['month']) ? $_POST['month'] : "01";
 ?>
 <div class="row">
- <?php
-  if($employee)
-  {
-    ?>
-  <div class="col-md-2 pull-right">
-    <a href="<?=site_url('reports/export');?>/<?=$org."/".$year."/".$month;?>" target="_blank" class="btn pull-right">Export</a>
-  </div>
   <?php
-  }?>
+    if($employee)
+    {
+      ?>
+      <div class="col-md-2 pull-right">
+      <a href="<?=site_url('reports/export');?>/<?=$org."/".$year."/".$month;?>" target="_blank" class="btn pull-right">Export</a>
+      </div>
+      <?php
+    }
+  ?>
   <div class="col-md-12">
     <div class="table-scrollable">
       <table class="table table-striped table-bordered table-hover">
@@ -110,7 +111,7 @@
                     <td><?=number_format($extra,2);?></td>
                     <td><?=$value['basic_salary'] - $salary;?></td>
                     <td><?=$value['payment_type'];?></td>
-                    <td>Wages for <?php echo date('F',strtotime($month));?> 2017</td>
+                    <td>Wages for <?php echo date('F',strtotime($year.'-'.$month));?> 2017</td>
                   </tr>
                 <?php
               }
