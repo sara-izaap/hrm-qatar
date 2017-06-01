@@ -107,11 +107,12 @@ class Reports extends Admin_Controller
 		$this->data['employee'] = $this->reports_model->get_org_employee($org_id,$month,$year);
 		$this->load->view("frontend/reports/export",$this->data);
 	}
-	public function export_timesheet($org_id='',$daterange='')
+	public function export_timesheet($org_id='',$daterange='',$save='')
 	{
 		$daterange = str_replace("-to-"," | ", $daterange);
 		$this->data['timesheet'] = $this->reports_model->get_timesheet($org_id,$daterange);
 		$this->data['daterange'] = $daterange;
+		$this->data['save'] = $save;
 		$this->load->view('frontend/reports/export_timesheet',$this->data);
 	}
  }
